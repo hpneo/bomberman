@@ -1,5 +1,5 @@
 //65 * 20, 65 * 14
-var game = new Phaser.Game(860, 640, Phaser.AUTO);
+var game = new Phaser.Game(15 * 32, 9 * 32, Phaser.AUTO);
 
 game.state.add('Boot', Boot);
 game.state.add('Preloader', Preloader);

@@ -24,7 +24,7 @@ Menu.prototype = {
 
   },
   playGame:function(){
-  		this.background_music.stop();
+  	this.background_music.stop();
 		this.state.start('Game');
   }
 };
