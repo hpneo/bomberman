@@ -27,6 +27,7 @@ Preloader.prototype = {
     this.load.image("repeating_bombs", "assets/images/repeating_bombs.png");
 
     this.load.audio('music-intro', 'assets/audio/intro.mp3');
+    this.load.audio('music-lvl1', 'assets/audio/music-lvl1.mp3');
     this.load.audio("explosion", "assets/audio/bomb.ogg");
     this.load.audio("powerup", "assets/audio/powerup.ogg");
     this.load.audio("click", "assets/audio/click.ogg");
