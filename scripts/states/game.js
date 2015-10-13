@@ -9,6 +9,7 @@ Game.prototype = {
     map.addTilesetImage('Level 1', 'tilemap_cave');
     this.ground = map.createLayer('Ground'),
     this.rocks = map.createLayer('Rocks');
+<<<<<<< HEAD
     this.rocks.enableBody = true;
 
     //Bombas
@@ -20,6 +21,14 @@ Game.prototype = {
 
     //Player
     this.player = new Player(this.game, 32 * 6, 32 * 4, 'red', 0);
+=======
+    this.bombs = this.game.add.group();
+    this.rocks.enableBody = true;
+    // this.rocks.debug = true;
+    // this.player = game.add.sprite(32, 32, 'red', 0);
+    this.player = new Player(this.game, 32 * 6, 32 * 4, 'red', "Front");
+    this.game.physics.enable(this.bombs, Phaser.Physics.ARCADE);
+>>>>>>> origin/master
     this.game.physics.enable(this.rocks);
     map.setCollision(1214, true, 'Rocks');
     this.cursors = game.input.keyboard.createCursorKeys();
@@ -40,6 +49,7 @@ Game.prototype = {
   render: function() {
     // this.game.debug.body(this.player);
   },
+<<<<<<< HEAD
   createBomb:function(x,y,key,frame){
     if(this.player.bombButtonJustPressed && this.bombsPool.total<this.bombsMax){
       var currentBomb = this.bombsPool.getFirstExists(false);
@@ -54,4 +64,9 @@ Game.prototype = {
       }
     }
   },
+=======
+  onPlaceBomb: function(x, y, key ) {
+   this.bombs.add(new Bomb(x,y,key,0));
+  }
+>>>>>>> origin/master
 };

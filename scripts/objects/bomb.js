@@ -1,5 +1,10 @@
 
+function getFrame(prefix, number) {
+  return "gamesprites/" + prefix + "/" + prefix + "_" + number + ".png";
+}
+
 var Bomb = function(game, x, y, key, frame) {
+<<<<<<< HEAD
   Phaser.Sprite.call(this, game, x, y, key, frame);
   this.anchor.setTo(0.5, 0.5);
   //this.scale.setTo(0.5,0.5);
@@ -10,6 +15,17 @@ var Bomb = function(game, x, y, key, frame) {
   this.sizeTween = game.add.tween(this.scale).to({x: 1.2, y: 1.2}, 500, Phaser.Easing.Default, true, 0, true, true);
   this.sizeTween.start();
   this.sizeTween.onComplete.add(this.removeBomb,this);
+=======
+
+	Phaser.Sprite.call(this, game, x, y, key, frame);
+
+	this.anchor.setTo(.5, .5);
+	game.physics.enable(this, Phaser.Physics.ARCADE);
+  this.body.immovable = true;
+
+  this.game.add.existing(this);
+  this.sizeTween = this.game.add.tween(this.scale).to({x: 1.2, y: 1.2}, 500, Phaser.Easing.Default, true, 0, true, true);
+>>>>>>> origin/master
 }
 
 Bomb.prototype = Object.create(Phaser.Sprite.prototype);
