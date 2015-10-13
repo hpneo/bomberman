@@ -15,7 +15,7 @@ Menu.prototype = {
 
     this.btn_play = this.game.add.button(this.game.width/2,this.game.height/2,'play-menu',this.playGame,this);
     this.btn_play.anchor.setTo(0.5,0.5);
-  	this.btn_play.scale.setTo(1);
+  	this.btn_play.scale.setTo(0.5);
 
     console.log('En el Menu');
     //this.state.start('Preloader');

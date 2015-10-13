@@ -1,5 +1,3 @@
-var Bomb;
-
 var DEFAULT_PLAYER_SPEED = 160;
 
 
@@ -15,13 +13,12 @@ function Player(game, x, y, key, frame) {
   this.game.physics.enable(this);
 
   this.body.setSize(24, 24, 4, 24);
-  this.anchor.set(0, 0);
+  this.anchor.setTo(0, 0);
   this.body.collideWorldBounds = true;
 
   this.facing = "down";
   this.bombButtonJustPressed = false;
   this.speed = DEFAULT_PLAYER_SPEED;
-
 
   this.game.add.existing(this);
 }
@@ -31,8 +28,8 @@ Player.prototype.constructor = Player;
 
 // Player.prototype.create = function() {};
 // Player.prototype.update = function() {};
-Player.prototype.handleInput = function() {
-  this.handleMotionInput();
+Player.prototype.handleInput = function(rocks) {
+  this.handleMotionInput(rocks);
   this.handleBombInput();
 };
 
