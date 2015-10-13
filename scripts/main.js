@@ -1,4 +1,5 @@
 //65 * 20, 65 * 14
+window.TEXTURES = "bombermanTextures";
 var game = new Phaser.Game(15 * 32, 9 * 32, Phaser.AUTO);
 
 game.state.add('Boot', Boot);
