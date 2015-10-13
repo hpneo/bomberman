@@ -1,5 +1,4 @@
-
-var Explosion = function(game, x, y, key, frame) {
+function Explosion(game, x, y, key, frame) {
 	Phaser.Sprite.call(this, game, x, y, key, frame);
 	this.anchor.setTo(0.5, 0.5);
 	game.physics.enable(this, Phaser.Physics.ARCADE);
@@ -9,5 +8,5 @@ var Explosion = function(game, x, y, key, frame) {
   this.outOfBoundsKill = true;
 }
 
-Bomb.prototype = Object.create(Phaser.Sprite.prototype);
-Bomb.prototype.constructor = Explosion;
+Explosion.prototype = Object.create(Phaser.Sprite.prototype);
+Explosion.prototype.constructor = Explosion;

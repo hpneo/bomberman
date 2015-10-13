@@ -1,9 +1,4 @@
-<<<<<<< HEAD
-//15 * 32, 9 * 32
-=======
-//65 * 20, 65 * 14
 window.TEXTURES = "bombermanTextures";
->>>>>>> origin/master
 var game = new Phaser.Game(15 * 32, 9 * 32, Phaser.AUTO);
 
 game.state.add('Boot', Boot);
