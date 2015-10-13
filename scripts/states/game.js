@@ -29,32 +29,8 @@ Game.prototype = {
   update: function() {
     this.physics.arcade.collide(this.player, this.rocks);
 
-    this.player.body.velocity.set(0);
+    this.player.handleMotionInput(this.rocks);
 
-    if (this.cursors.left.isDown)
-    {
-        this.player.body.velocity.x = -100;
-        this.player.play('left');
-    }
-    else if (this.cursors.right.isDown)
-    {
-        this.player.body.velocity.x = 100;
-        this.player.play('right');
-    }
-    else if (this.cursors.up.isDown)
-    {
-        this.player.body.velocity.y = -100;
-        this.player.play('up');
-    }
-    else if (this.cursors.down.isDown)
-    {
-        this.player.body.velocity.y = 100;
-        this.player.play('down');
-    }
-    else
-    {
-        this.player.animations.stop();
-    }
   },
   render: function() {
     // this.game.debug.body(this.player);
