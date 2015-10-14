@@ -5,6 +5,7 @@ function Bomb(game, x, y, key, frame,explosionPool) {
   this.explosionPool=explosionPool;
   this.scale.setTo(0.5,0.5);
   game.physics.enable(this, Phaser.Physics.ARCADE);
+  this.body.immovable = true;
   this.animations.add('normal', [0,1], 2, true);
   this.animations.play('normal');
 
@@ -21,7 +22,7 @@ Bomb.prototype.removeBomb = function() {
   this.renderExplosion();
   this.kill();
   this.sizeTween.stop(); // stop tween and mark it for deletion
-  
+
 };
 Bomb.prototype.resetBomb = function(x,y){
   this.reset(x,y);
