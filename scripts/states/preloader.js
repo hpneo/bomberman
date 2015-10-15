@@ -17,6 +17,11 @@ Preloader.prototype = {
   	this.load.image('continue-intro','assets/images/intro-continue.png');
   	this.load.image('play-menu','assets/images/menu-play.png');
 
+    this.load.image('bryan','assets/images/bryan.png');
+    this.load.image('gary','assets/images/gary.png');
+    this.load.image('gustavo','assets/images/gustavo.png');
+    this.load.image('piero','assets/images/piero.png');
+
     this.load.tilemap('level_1', 'assets/tilemaps/level_1.json', null, Phaser.Tilemap.TILED_JSON);
     this.load.image('tilemap_cave', 'assets/images/tilesheet_cave.png');
 
