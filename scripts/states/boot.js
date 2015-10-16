@@ -10,6 +10,7 @@ Boot.prototype = {
   create: function() {
     game.stage.disableVisibilityChange = true;
     game.input.maxPointers = 1;
+
     if (game.device.desktop) {
       game.stage.scale.pageAlignHorizontally = true;
     } else {
@@ -22,6 +23,7 @@ Boot.prototype = {
       game.stage.scale.pageAlignHorizontally = true;
       game.stage.scale.setScreenSize(true);
     }
+
     this.game.state.start('Preloader');
   }
 };
