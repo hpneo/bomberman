@@ -15,11 +15,11 @@ function Explosion(game, x, y, key, frame) {
 Explosion.prototype = Object.create(Phaser.Sprite.prototype);
 Explosion.prototype.constructor = Explosion;
 
-Explosion.prototype.removeExplosion = function(){
+Explosion.prototype.removeExplosion = function() {
 	this.kill();
 };
 
-Explosion.prototype.resetExplosion =function(x,y){
+Explosion.prototype.resetExplosion =function(x ,y) {
 	this.reset(x,y);
 	this.animations.play('expand');
 };

@@ -11,7 +11,7 @@ function Player(game, x, y, key, frame) {
 
   this.game.physics.enable(this);
 
-  this.body.setSize(24, 24, 4, 24);
+  this.body.setSize(26, 24, 3, 24);
   this.anchor.setTo(0, 0);
   this.body.collideWorldBounds = true;
 

@@ -15,7 +15,7 @@ Game.prototype = {
     this.ground = this.map.createLayer('Ground'),
     this.rocks = this.map.createLayer('Rocks');
     this.rocks.enableBody = true;
-    this.game.physics.enable(this.rocks);
+    this.game.physics.arcade.enable(this.rocks);
     this.rocks.enableBody = true;
     this.rocks.immovable = true;
     //Musica
@@ -53,27 +53,27 @@ Game.prototype = {
   },
   update: function() {
     this.physics.arcade.collide(this.player, this.rocks);
-    this.physics.arcade.collide(this.explosionPool, this.rocks, function(explosion) {
-      explosion.kill();
-    });
     this.physics.arcade.overlap(this.player, this.explosionPool, this.destroyPlayer, null, this);
 
     this.player.handleMotionInput(this.rocks);
     this.player.handleBombInput();
-    this.createBomb(this.player.x + this.player.width / 2, this.player.y + this.player.height / 2, this.keyBomb, 0);
-  },
-  createBomb: function(x,y,key,frame){
-    if (this.player.bombButtonJustPressed && this.bombsPool.total < this.maxBombs && this.time.now > this.nextBomb){
-      var currentBomb = this.bombsPool.getFirstExists(false);
-      this.nextBomb = this.time.now + this.bombRate;
 
-      if(!currentBomb) {
-        currentBomb = new Bomb(this.game, x, y, key, frame, this.explosionPool, this.explosionRange);
-        this.bombsPool.add(currentBomb);
-      }
-      else{
-        currentBomb.resetBomb(x, y);
-      }
+    if (this.player.bombButtonJustPressed && this.bombsPool.total < this.maxBombs && this.time.now > this.nextBomb) {
+      this.createBomb(this.player.x + this.player.width / 2, this.player.y + this.player.height / 2, this.keyBomb, 0);
+    }
+  },
+  createBomb: function(x, y, key, frame) {
+    var rocksColliding = this.getRocksColliding(x, y);
+
+    var currentBomb = this.bombsPool.getFirstExists(false);
+    this.nextBomb = this.time.now + this.bombRate;
+
+    if(!currentBomb) {
+      currentBomb = new Bomb(this.game, x, y, key, frame, this.explosionPool, this.explosionRange, rocksColliding);
+      this.bombsPool.add(currentBomb);
+    }
+    else{
+      currentBomb.resetBomb(x, y, rocksColliding);
     }
   },
   destroyPlayer: function(player, explosion) {
@@ -81,5 +81,35 @@ Game.prototype = {
       player.kill();
       this.backgroundMusic.stop();
     }.bind(this), 40);
+  },
+  getRocksColliding: function(x, y) {
+    var column = Math.floor(x / 32),
+        row = Math.floor(y / 32),
+        rocksColliding = {
+          up: true,
+          down: true,
+          left: true,
+          right: true
+        };
+
+
+
+    if (this.rocks.layer.data[row - 1]) {
+      rocksColliding.up = (this.rocks.layer.data[row - 1][column].index === 1214);
+    }
+
+    if (this.rocks.layer.data[row + 1]) {
+      rocksColliding.down = (this.rocks.layer.data[row + 1][column].index === 1214);
+    }
+
+    if (this.rocks.layer.data[row][column - 1]) {
+      rocksColliding.left = (this.rocks.layer.data[row][column - 1].index === 1214);
+    }
+
+    if (this.rocks.layer.data[row][column + 1]) {
+      rocksColliding.right = (this.rocks.layer.data[row][column + 1].index === 1214);
+    }
+
+    return rocksColliding;
   }
 };

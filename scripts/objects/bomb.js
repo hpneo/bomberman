@@ -1,10 +1,12 @@
-function Bomb(game, x, y, key, frame, explosionPool, explosionRange) {
+function Bomb(game, x, y, key, frame, explosionPool, explosionRange, rocksColliding) {
   Phaser.Sprite.call(this, game, x, y, key, frame);
   this.game=game;
   this.explosionRange = explosionRange;
+  this.rocksColliding = rocksColliding;
   this.anchor.setTo(0.5, 0.5);
   this.explosionPool = explosionPool;
-  this.scale.setTo(0.5,0.5);
+  this.width = 32;
+  this.height = 32;
 
   game.physics.enable(this, Phaser.Physics.ARCADE);
 
@@ -29,8 +31,9 @@ Bomb.prototype.removeBomb = function() {
   this.sizeTween.stop(); // stop tween and mark it for deletion
 };
 
-Bomb.prototype.resetBomb = function(x,y){
-  this.reset(x,y);
+Bomb.prototype.resetBomb = function(x, y, rocksColliding) {
+  this.reset(x, y);
+  this.rocksColliding = rocksColliding;
   this.hasExploded = false;
   this.sizeTween = game.add.tween(this.scale).to({x: 1.2, y: 1.2}, 500, Phaser.Easing.Default, true, 0, true, true);
   this.sizeTween.onComplete.add(this.removeBomb, this);
@@ -38,10 +41,22 @@ Bomb.prototype.resetBomb = function(x,y){
 
 Bomb.prototype.renderExplosion = function() {
   this.renderSingleExplosion(this.x, this.y);
-  this.renderUpExplosion();
-  this.renderDownExplosion();
-  this.renderLeftExplosion();
-  this.renderRightExplosion();
+
+  if (!this.rocksColliding.up) {
+    this.renderUpExplosion();
+  }
+
+  if (!this.rocksColliding.down) {
+    this.renderDownExplosion();
+  }
+
+  if (!this.rocksColliding.left) {
+    this.renderLeftExplosion();
+  }
+
+  if (!this.rocksColliding.right) {
+    this.renderRightExplosion();
+  }
 };
 
 Bomb.prototype.renderSingleExplosion = function(x, y) {
