@@ -4,6 +4,7 @@ function Player(game, x, y, key, frame) {
   Phaser.Sprite.call(this, game, x, y, key, frame);
 
   this.game = game;
+  this.maxBombs = 2;
   this.animations.add('up', [15, 12, 13, 14], 8, true);
   this.animations.add('left', [5, 6, 7, 4], 8, true);
   this.animations.add('right', [9, 10, 11, 8], 8, true);
@@ -75,4 +76,8 @@ Player.prototype.freeze = function() {
   this.body.velocity.x = 0;
   this.body.velocity.y = 0;
   this.animations.stop();
+};
+
+Player.prototype.canDropBombs = function(bombsPool) {
+  return (bombsPool.total < this.maxBombs);
 };

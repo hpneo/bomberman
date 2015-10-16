@@ -1,6 +1,6 @@
 function Bomb(game, x, y, key, frame, explosionPool, explosionRange, rocksColliding) {
   Phaser.Sprite.call(this, game, x, y, key, frame);
-  this.game=game;
+  this.game = game;
   this.explosionRange = explosionRange;
   this.rocksColliding = rocksColliding;
   this.anchor.setTo(0.5, 0.5);

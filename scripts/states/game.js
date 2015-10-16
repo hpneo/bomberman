@@ -23,7 +23,6 @@ Game.prototype = {
     this.backgroundMusic.play();
 
     //Bombas
-    this.maxBombs = 2;
     this.bombsPool = this.add.group();
     this.bombsPool.enableBody = true;
     this.bombsPool.physicsBodyType = Phaser.Physics.ARCADE;
@@ -58,7 +57,7 @@ Game.prototype = {
     this.player.handleMotionInput(this.rocks);
     this.player.handleBombInput();
 
-    if (this.player.bombButtonJustPressed && this.bombsPool.total < this.maxBombs && this.time.now > this.nextBomb) {
+    if (this.player.bombButtonJustPressed && this.player.canDropBombs(this.bombsPool) && this.time.now > this.nextBomb) {
       this.createBomb(this.player.x + this.player.width / 2, this.player.y + this.player.height / 2, this.keyBomb, 0);
     }
   },
@@ -91,8 +90,6 @@ Game.prototype = {
           left: true,
           right: true
         };
-
-
 
     if (this.rocks.layer.data[row - 1]) {
       rocksColliding.up = (this.rocks.layer.data[row - 1][column].index === 1214);
