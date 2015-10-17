@@ -1,0 +1,17 @@
+[
+  {
+    "title": "Cave",
+    "tileset": "tilemap_cave",
+    "rockId": 1214
+  },
+  {
+    "title": "Ice Cave",
+    "tileset": "tilemap_cave",
+    "rockId": 974
+  },
+  {
+    "title": "Grass",
+    "tileset": "tilemap_grass",
+    "rockId": 23
+  }
+]

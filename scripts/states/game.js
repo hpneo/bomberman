@@ -4,13 +4,26 @@ function Game() {
 }
 
 Game.prototype = {
-  preload: function() {},
+  loadLevel: function(index) {
+    var levels = this.game.cache.getJSON('levels'),
+        levelsIndex = index - 1,
+        level = levels[levelsIndex];
+
+    this.map = this.add.tilemap('level_' + index);
+    this.map.addTilesetImage(level.title, level.tileset);
+    this.map.setCollision(level.rockId, true, 'Rocks');
+
+    //Musica
+    this.backgroundMusic = this.add.audio('level_' + index, 0.6, true);
+    this.backgroundMusic.play();
+
+    this.level = level;
+  },
   create: function() {
     //Mundo
     this.game.physics.startSystem(Phaser.Physics.ARCADE);
 
-    this.map = this.add.tilemap('level_1');
-    this.map.addTilesetImage('Level 1', 'tilemap_cave');
+    this.loadLevel(this.game.rnd.between(1, 3));
 
     this.ground = this.map.createLayer('Ground'),
     this.rocks = this.map.createLayer('Rocks');
@@ -18,9 +31,6 @@ Game.prototype = {
     this.game.physics.arcade.enable(this.rocks);
     this.rocks.enableBody = true;
     this.rocks.immovable = true;
-    //Musica
-    this.backgroundMusic = this.add.audio('music-lvl1', 0.6, true);
-    this.backgroundMusic.play();
 
     //Bombas
     this.bombsPool = this.add.group();
@@ -45,8 +55,6 @@ Game.prototype = {
     this.enemyPool = this.add.group();
 
     this.game.time.events.loop(5000, this.addEnemy, this);
-
-    this.map.setCollision(1214, true, 'Rocks');
 
     this.cursors = game.input.keyboard.createCursorKeys();
 
@@ -127,7 +135,8 @@ Game.prototype = {
   },
   destroyEnemy: function(enemy, explosion) {
     enemy.kill();
-    this.player.score++;
+
+    this.player.score += 1;
 
     this.scoreText.text = this.player.score.toString();
   },
@@ -142,19 +151,19 @@ Game.prototype = {
         };
 
     if (this.rocks.layer.data[row - 1]) {
-      rocksColliding.up = (this.rocks.layer.data[row - 1][column].index === 1214);
+      rocksColliding.up = (this.rocks.layer.data[row - 1][column].index === this.level.rockId);
     }
 
     if (this.rocks.layer.data[row + 1]) {
-      rocksColliding.down = (this.rocks.layer.data[row + 1][column].index === 1214);
+      rocksColliding.down = (this.rocks.layer.data[row + 1][column].index === this.level.rockId);
     }
 
     if (this.rocks.layer.data[row][column - 1]) {
-      rocksColliding.left = (this.rocks.layer.data[row][column - 1].index === 1214);
+      rocksColliding.left = (this.rocks.layer.data[row][column - 1].index === this.level.rockId);
     }
 
     if (this.rocks.layer.data[row][column + 1]) {
-      rocksColliding.right = (this.rocks.layer.data[row][column + 1].index === 1214);
+      rocksColliding.right = (this.rocks.layer.data[row][column + 1].index === this.level.rockId);
     }
 
     return rocksColliding;

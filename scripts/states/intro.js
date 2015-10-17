@@ -41,7 +41,7 @@ Intro.prototype = {
           wordWrapWidth: (this.game.world.width / members.length) - 50
         };
 
-    this.title = this.add.text(this.game.world.width / 2, 30, 'Teoria de Juegos', fontTitle);
+    this.title = this.add.text(this.game.world.width / 2, 30, 'VoltorbMan', fontTitle);
     this.title.anchor.setTo(0.5);
 
     members.forEach(function(member, index) {

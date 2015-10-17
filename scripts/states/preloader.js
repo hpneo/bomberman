@@ -21,8 +21,12 @@ Preloader.prototype = {
     this.load.image('gustavo','assets/images/gustavo.png');
     this.load.image('piero','assets/images/piero.png');
 
+    this.load.json('levels', 'assets/data/levels.json')
     this.load.tilemap('level_1', 'assets/tilemaps/level_1.json', null, Phaser.Tilemap.TILED_JSON);
+    this.load.tilemap('level_2', 'assets/tilemaps/level_2.json', null, Phaser.Tilemap.TILED_JSON);
+    this.load.tilemap('level_3', 'assets/tilemaps/level_3.json', null, Phaser.Tilemap.TILED_JSON);
     this.load.image('tilemap_cave', 'assets/images/tilesheet_cave.png');
+    this.load.image('tilemap_grass', 'assets/images/tilesheet_grass.png');
 
     this.load.spritesheet('red', 'assets/images/spritesheet_red.png', 32, 48);
     this.load.spritesheet('enemy', 'assets/images/spritesheet_enemy.png', 32, 48);
@@ -33,7 +37,9 @@ Preloader.prototype = {
 
     this.load.audio('music-menu', 'assets/audio/menu.mp3');
     this.load.audio('music-intro', 'assets/audio/opening.mp3');
-    this.load.audio('music-lvl1', 'assets/audio/level1.mp3');
+    this.load.audio('level_1', 'assets/audio/level1.mp3');
+    this.load.audio('level_2', 'assets/audio/level2.mp3');
+    this.load.audio('level_3', 'assets/audio/level3.mp3');
     this.load.audio("explosion", "assets/audio/bomb.ogg");
     this.load.audio("powerup", "assets/audio/powerup.ogg");
     this.load.audio("click", "assets/audio/click.ogg");
