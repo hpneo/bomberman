@@ -25,7 +25,8 @@ Preloader.prototype = {
     this.load.image('tilemap_cave', 'assets/images/tilesheet_cave.png');
 
     this.load.spritesheet('red', 'assets/images/spritesheet_red.png', 32, 48);
-    this.load.spritesheet('voltor','assets/images/bomb1.png', 32, 32);
+    this.load.spritesheet('enemy', 'assets/images/spritesheet_enemy.png', 32, 48);
+    this.load.spritesheet('voltorb','assets/images/bomb1.png', 32, 32);
     this.load.spritesheet('electrode','assets/images/bomb2.png', 32, 32);
     this.load.spritesheet('explosion','assets/images/fire_2.png', 32, 32);
     this.load.image("repeating_bombs", "assets/images/repeating_bombs.png");
