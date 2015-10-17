@@ -62,6 +62,16 @@ Game.prototype = {
 
     this.availableSpaces = availableSpaces;
 
+    var font = {
+          font: '15px "Pokemon Regular"',
+          fill: '#ffffff',
+          stroke: '#000000',
+          strokeThickness: 4,
+          align: 'center',
+        };
+
+    this.scoreText = this.add.text(this.game.world.width - 30, 10, this.player.score.toString(), font);
+
     //Ajustes
     this.ground.resizeWorld();
     this.rocks.resizeWorld();
@@ -86,12 +96,12 @@ Game.prototype = {
         position = this.availableSpaces[positionIndex];
 
     if (!currentEnemy) {
-      currentEnemy = new Enemy(this.game, position.x * 32, position.y * 32 - 8);
+      currentEnemy = new Enemy(this.game, position.x * 32, position.y * 32 - 4);
 
       this.enemyPool.add(currentEnemy);
     }
     else {
-      currentEnemy.reset(position.x * 32, position.y * 32 - 8);
+      currentEnemy.reset(position.x * 32, position.y * 32 - 4);
     }
   },
   createBomb: function(x, y, key, frame) {
@@ -117,6 +127,9 @@ Game.prototype = {
   },
   destroyEnemy: function(enemy, explosion) {
     enemy.kill();
+    this.player.score++;
+
+    this.scoreText.text = this.player.score.toString();
   },
   getRocksColliding: function(x, y) {
     var column = Math.floor(x / 32),

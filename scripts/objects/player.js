@@ -5,6 +5,7 @@ function Player(game, x, y, key, frame) {
 
   this.game = game;
   this.maxBombs = 2;
+  this.score = 0;
   this.animations.add('up', [15, 12, 13, 14], 8, true);
   this.animations.add('left', [5, 6, 7, 4], 8, true);
   this.animations.add('right', [9, 10, 11, 8], 8, true);
@@ -12,7 +13,7 @@ function Player(game, x, y, key, frame) {
 
   this.game.physics.enable(this);
 
-  this.body.setSize(26, 24, 3, 24);
+  this.body.setSize(24, 24, 4, 24);
   this.anchor.setTo(0, 0);
   this.body.collideWorldBounds = true;
 
