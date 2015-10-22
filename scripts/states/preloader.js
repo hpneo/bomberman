@@ -9,7 +9,6 @@ Preloader.prototype = {
   	this.load.setPreloadSprite(this.preloadBar);
   	//Carga de assets
 
-    this.load.atlasJSONHash("bombermanTextures", "assets/textures/Bomberman-pack.png", "assets/textures/Bomberman-pack.json");
 
     this.load.image('background-intro','assets/images/intro-2.png');
   	this.load.image('background-menu','assets/images/menu-3.jpg');
@@ -33,7 +32,6 @@ Preloader.prototype = {
     this.load.spritesheet('voltorb','assets/images/bomb1.png', 32, 32);
     this.load.spritesheet('electrode','assets/images/bomb2.png', 32, 32);
     this.load.spritesheet('explosion','assets/images/fire_2.png', 32, 32);
-    this.load.image("repeating_bombs", "assets/images/repeating_bombs.png");
 
     this.load.audio('music-menu', 'assets/audio/menu.mp3');
     this.load.audio('music-intro', 'assets/audio/opening.mp3');

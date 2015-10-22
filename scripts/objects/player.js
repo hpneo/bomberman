@@ -5,7 +5,10 @@ function Player(game, x, y, key, frame) {
 
   this.game = game;
   this.maxBombs = 2;
+  this.bombStrength = 1;
   this.score = 0;
+  this.alive = true;
+  this.speed = DEFAULT_PLAYER_SPEED;
   this.animations.add('up', [15, 12, 13, 14], 8, true);
   this.animations.add('left', [5, 6, 7, 4], 8, true);
   this.animations.add('right', [9, 10, 11, 8], 8, true);
@@ -19,7 +22,6 @@ function Player(game, x, y, key, frame) {
 
   this.facing = "down";
   this.bombButtonJustPressed = false;
-  this.speed = DEFAULT_PLAYER_SPEED;
 
   this.game.add.existing(this);
 }
@@ -82,3 +84,14 @@ Player.prototype.freeze = function() {
 Player.prototype.canDropBombs = function(bombsPool) {
   return (bombsPool.total < this.maxBombs);
 };
+
+Player.prototype.resetForNewRound = function(x, y, key, frame) {
+    this.x = this.x;
+    this.y = this.y;
+    this.facing = "down";
+    this.alive = true;
+    this.maxBombs = 2;
+    this.bombStrength = 1;
+    this.score = 0;
+    this.speed = DEFAULT_PLAYER_SPEED;
+  };

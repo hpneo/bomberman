@@ -54,8 +54,7 @@ Game.prototype = {
 
     this.enemyPool = this.add.group();
 
-    this.game.time.events.loop(5000, this.addEnemy, this);
-
+    //this.game.time.events.loop(5000, this.addEnemy, this);
     this.cursors = game.input.keyboard.createCursorKeys();
 
     var availableSpaces = [];
@@ -83,6 +82,10 @@ Game.prototype = {
     //Ajustes
     this.ground.resizeWorld();
     this.rocks.resizeWorld();
+    
+    this.addEnemy();
+    this.addEnemy();
+    this.addEnemy();
   },
   update: function() {
     this.physics.arcade.collide(this.player, this.rocks);
@@ -98,6 +101,9 @@ Game.prototype = {
     if (this.player.bombButtonJustPressed && this.player.canDropBombs(this.bombsPool) && this.time.now > this.nextBomb) {
       this.createBomb(this.player.x + this.player.width / 2, this.player.y + this.player.height / 2, this.keyBomb, 0);
     }
+    for (var i = 0, len = this.enemyPool.children.length; i < len; i++) {
+      this.enemyPool.children[i].handleArificialMovement(this.rocks);
+}
   },
   addEnemy: function() {
     var currentEnemy = this.enemyPool.getFirstExists(false),
@@ -109,9 +115,9 @@ Game.prototype = {
 
       this.enemyPool.add(currentEnemy);
     }
-    else {
-      currentEnemy.reset(position.x * 32, position.y * 32 - 4);
-    }
+    // else {
+    //   currentEnemy.reset(position.x * 32, position.y * 32 - 4);
+    // }
   },
   createBomb: function(x, y, key, frame) {
     var rocksColliding = this.getRocksColliding(x, y);
@@ -168,5 +174,27 @@ Game.prototype = {
     }
 
     return rocksColliding;
+  },
+  resetPlayer: function() {
+      this.player.resetForNewRound();
+  },
+  clearBombs: function() {
+    for(var bombId in this.bombsPool) {//TODO: add detonate timer ID
+          //clearTimeout(this.bombsPool[bombId].detonateTimerID); 
+    }
+    this.bombsPool = {};
+  },
+  resetForNewRound: function() {
+    this.clearBombs();
+    this.resetPlayer();
+  },
+  calculateRoundWinner: function() {
+    if(this.player.alive)
+    {
+       if(this.enemyPool.count == 0)
+        this.showGameStatusAndReset();
+    }
+  },
+  showGameStatusAndReset: function() {
   }
 };
