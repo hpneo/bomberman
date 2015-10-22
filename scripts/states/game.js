@@ -86,6 +86,7 @@ Game.prototype = {
     this.addEnemy();
     this.addEnemy();
     this.addEnemy();
+    this.game.time.events.loop(1000, this.handleEnemyMovement, this);
   },
   update: function() {
     this.physics.arcade.collide(this.player, this.rocks);
@@ -101,9 +102,12 @@ Game.prototype = {
     if (this.player.bombButtonJustPressed && this.player.canDropBombs(this.bombsPool) && this.time.now > this.nextBomb) {
       this.createBomb(this.player.x + this.player.width / 2, this.player.y + this.player.height / 2, this.keyBomb, 0);
     }
+  },
+  handleEnemyMovement: function(){
     for (var i = 0, len = this.enemyPool.children.length; i < len; i++) {
-      this.enemyPool.children[i].handleArificialMovement(this.rocks);
-}
+      var rocksColliding = this.getRocksColliding(this.enemyPool.children[i].x, this.enemyPool.children[i].y);
+      this.enemyPool.children[i].handleArificialMovement(this.rocks,rocksColliding);
+    }
   },
   addEnemy: function() {
     var currentEnemy = this.enemyPool.getFirstExists(false),
@@ -157,20 +161,24 @@ Game.prototype = {
           right: true
         };
 
-    if (this.rocks.layer.data[row - 1]) {
-      rocksColliding.up = (this.rocks.layer.data[row - 1][column].index === this.level.rockId);
+    if(row - 1>=0 && column>=0){
+      if (this.rocks.layer.data[row - 1] !== undefined && this.rocks.layer.data[row - 1]) {
+       rocksColliding.up = (this.rocks.layer.data[row - 1][column].index === this.level.rockId);
+     }
+   }    if(column>=0){
+      if (this.rocks.layer.data[row + 1] !== undefined && this.rocks.layer.data[row + 1]) {
+       rocksColliding.down = (this.rocks.layer.data[row + 1][column].index === this.level.rockId);
+     }
     }
-
-    if (this.rocks.layer.data[row + 1]) {
-      rocksColliding.down = (this.rocks.layer.data[row + 1][column].index === this.level.rockId);
-    }
-
-    if (this.rocks.layer.data[row][column - 1]) {
+    if(column - 1>=0 && row>=0){
+      if (this.rocks.layer.data[row][column - 1] !== undefined && this.rocks.layer.data[row][column - 1]) {
       rocksColliding.left = (this.rocks.layer.data[row][column - 1].index === this.level.rockId);
-    }
-
-    if (this.rocks.layer.data[row][column + 1]) {
-      rocksColliding.right = (this.rocks.layer.data[row][column + 1].index === this.level.rockId);
+      }
+    } 
+    if(row>=0){
+      if (this.rocks.layer.data[row][column + 1] !== undefined  && this.rocks.layer.data[row][column + 1]) {
+        rocksColliding.right = (this.rocks.layer.data[row][column + 1].index === this.level.rockId);
+      }
     }
 
     return rocksColliding;

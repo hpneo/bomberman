@@ -1,4 +1,4 @@
-var DEFAULT_ENEMY_SPEED = 120;
+var DEFAULT_ENEMY_SPEED = 128;
 
 function Enemy(game, x, y) {
   Player.call(this, game, x, y, 'enemy', 0);
@@ -18,84 +18,61 @@ function Enemy(game, x, y) {
 Enemy.prototype = Object.create(Player.prototype);
 Enemy.prototype.constructor = Enemy;
 
-Enemy.prototype.handleArificialMovement = function(rocks) {
+Enemy.prototype.handleArificialMovement = function(rocks,rocksColliding) {
+  	
   	var moving = true;
 	this.game.physics.arcade.collide(this, this.rocks);
-	moveChooser = Math.floor((Math.random() * 4) + 1);
+	moveChooser = Math.floor((Math.random() * 5) + 1);
 	console.log(moveChooser);
 	this.body.velocity.x = 0;
 	this.body.velocity.y = 0;
-	var walkCounter = 5000;
-	var direction;
+
+	//TODO:USE rocksColliding to create a fancy movement "IA"
+
 	if (moveChooser == 1)
 	{
-		setTimeout(function(){
-			if(this.alive)
+		if(this.alive)
 			{
-				console.log("left");
-				this.sprite.body.velocity.x = -this.speed;
+				this.body.velocity.x = -this.speed;
   				this.facing = "left";
-				direction = 1;
+    			moving = true;
 			}
-		}, walkCounter)
 	}
 	else if (moveChooser == 2)
 	{
-		setTimeout(function(){
-			if (this.alive)
+		if (this.alive)
 			{
-				this.sprite.body.velocity.x = this.speed;
+				this.body.velocity.x = this.speed;
   				this.facing = "right";
-				direction = 2;
+    			moving = true;
 			}
-		}, walkCounter)
 	}
 	else if (moveChooser == 3)
 	{
-		setTimeout(function(){
-			if (this.alive)
+		if (this.alive)
 			{
-				this.sprite.body.velocity.y = -this.speed;
+				this.body.velocity.y = -this.speed;
   				this.facing = "up";
-				direction = 3;
+    			moving = true;
 			}
-		}, walkCounter)
 	}
 	else if (moveChooser == 4)
 	{
-		setTimeout(function(){
-			if (this.alive)
+		if (this.alive)
 			{
-				console.log("down");
-				this.sprite.body.velocity.y = this.speed;
+				this.body.velocity.y = this.speed;
   				this.facing = "down";
-				direction = 4;
+    			moving = true;
 			}
-		}, walkCounter)
 	}
-
-	//walkCounter += 560;
-
-	if (direction == 1)
+	else if (moveChooser == 5)
 	{
-		this.sprite.body.velocity.x = -this.speed;
-		this.facing = "left";
+		if(this.alive)
+		{
+    		moving = false;
+    		this.freeze();		
+		}		
 	}
-	else if (direction == 2)
-	{
-		this.sprite.body.velocity.x = this.speed;
-		this.facing = "right";
-	}
-	else if (direction == 3)
-	{
-		this.sprite.body.velocity.y = -this.speed;
-		this.facing = "up";
-	}
-	else if (direction == 4)
-	{
-		this.sprite.body.velocity.y = this.speed;
-		this.facing = "down";
-	}	
   	if(moving)  {
     	this.animations.play(this.facing);
   	}
