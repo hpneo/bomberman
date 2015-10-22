@@ -88,6 +88,7 @@ Game.prototype = {
     this.physics.arcade.collide(this.player, this.rocks);
     this.physics.arcade.collide(this.enemyPool, this.rocks);
     this.physics.arcade.collide(this.player, this.enemyPool);
+    this.physics.arcade.collide(this.player, this.bombsPool);
     this.physics.arcade.overlap(this.player, this.explosionPool, this.destroyPlayer, null, this);
     this.physics.arcade.overlap(this.enemyPool, this.explosionPool, this.destroyEnemy, null, this);
 
