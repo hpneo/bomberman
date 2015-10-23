@@ -78,7 +78,7 @@ Game.prototype = {
     var pos=this.availableSpaces[this.availableSpaces.length - 1];
     this.player = new Player(this.game, 32 * pos.x, 32 * 0, 'red', 0);
     this.bombs = this.game.add.group();
-    
+
     this.scoreText = this.add.text(this.game.world.width - 30, 10, this.player.score.toString(), font);
 
     //Ajustes
@@ -88,7 +88,7 @@ Game.prototype = {
     this.addEnemy(1);
     this.addEnemy(2);
     this.addEnemy(3);
-    this.game.time.events.loop(200, this.handleEnemyMovement, this);
+    this.game.time.events.loop(2000, this.handleEnemyMovement, this);
   },
   update: function() {
     this.physics.arcade.collide(this.player, this.rocks);

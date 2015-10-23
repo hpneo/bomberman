@@ -18,20 +18,22 @@ function Enemy(game, x, y) {
 Enemy.prototype = Object.create(Player.prototype);
 Enemy.prototype.constructor = Enemy;
 
+function getRandomInt(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+};
 Enemy.prototype.handleArificialMovement = function(rocks,rocksColliding,moveChooserVal) {
   	
   	var moving = true;
 	this.game.physics.arcade.collide(this, this.rocks);
-	if(!moveChooserVal)
-		moveChooser = Math.floor((Math.random() * 5) + 1);
+	if(!moveChooserVal || moveChooserVal==null)
+		moveChooser = getRandomInt(1, 5) ;
 	else
 		moveChooser=moveChooserVal;
-	console.log(moveChooser);
 	this.body.velocity.x = 0;
 	this.body.velocity.y = 0;
 
 	//TODO:USE rocksColliding to create a fancy movement "IA"
-
+	console.log(moveChooser);
 	if (moveChooser == 1)
 	{
 		if(rocksColliding.left!=false)
@@ -44,7 +46,7 @@ Enemy.prototype.handleArificialMovement = function(rocks,rocksColliding,moveChoo
 		}
 		else
 		{
-			moveChooser= Math.floor(Math.random() * 5) + 2  ;
+			moveChooser= getRandomInt(2, 5) ;
 			this.handleArificialMovement(rocks,rocksColliding,moveChooser);
 		}
 	}
@@ -61,7 +63,7 @@ Enemy.prototype.handleArificialMovement = function(rocks,rocksColliding,moveChoo
 		}
 		else
 		{
-			moveChooser= Math.floor(Math.random() * 6) + 1  ;
+			moveChooser= getRandomInt(1, 5) ;
 			this.handleArificialMovement(rocks,rocksColliding,moveChooser);
 		}
 	}
@@ -78,7 +80,7 @@ Enemy.prototype.handleArificialMovement = function(rocks,rocksColliding,moveChoo
 		}
 		else
 		{
-			moveChooser= Math.floor(Math.random() * 6) + 1  ;
+			moveChooser= getRandomInt(1, 5) ;
 			this.handleArificialMovement(rocks,rocksColliding,moveChooser);
 		}
 		
@@ -96,7 +98,7 @@ Enemy.prototype.handleArificialMovement = function(rocks,rocksColliding,moveChoo
 		}
 		else
 		{
-			moveChooser= Math.floor(Math.random() * 3) + 1  ;
+			moveChooser= getRandomInt(1, 3) ;
 			this.handleArificialMovement(rocks,rocksColliding,moveChooser);	
 		}
 	}
@@ -105,7 +107,9 @@ Enemy.prototype.handleArificialMovement = function(rocks,rocksColliding,moveChoo
 		if(this.alive)
 		{
     		moving = false;
-    		this.freeze();		
+    		this.freeze();	
+			moveChooser= getRandomInt(1, 5) ;
+			this.handleArificialMovement(rocks,rocksColliding,moveChooser);	
 		}		
 	}
   	if(moving)  {
