@@ -48,9 +48,6 @@ Game.prototype = {
     this.explosionPool.setAll('body.allowGravity', true);
     this.explosionRange = 1;
 
-    //Player
-    this.player = new Player(this.game, 32 * 6, 32 * 4, 'red', 0);
-    this.bombs = this.game.add.group();
 
     this.enemyPool = this.add.group();
 
@@ -77,21 +74,27 @@ Game.prototype = {
           align: 'center',
         };
 
+    //Player
+    var pos=this.availableSpaces[this.availableSpaces.length - 1];
+    this.player = new Player(this.game, 32 * pos.x, 32 * 0, 'red', 0);
+    this.bombs = this.game.add.group();
+    
     this.scoreText = this.add.text(this.game.world.width - 30, 10, this.player.score.toString(), font);
 
     //Ajustes
     this.ground.resizeWorld();
     this.rocks.resizeWorld();
     
-    this.addEnemy();
-    this.addEnemy();
-    this.addEnemy();
-    this.game.time.events.loop(1000, this.handleEnemyMovement, this);
+    this.addEnemy(1);
+    this.addEnemy(2);
+    this.addEnemy(3);
+    this.game.time.events.loop(200, this.handleEnemyMovement, this);
   },
   update: function() {
     this.physics.arcade.collide(this.player, this.rocks);
     this.physics.arcade.collide(this.enemyPool, this.rocks);
     this.physics.arcade.collide(this.player, this.enemyPool);
+    this.physics.arcade.collide(this.enemyPool, this.bombsPool);
     this.physics.arcade.collide(this.player, this.bombsPool);
     this.physics.arcade.overlap(this.player, this.explosionPool, this.destroyPlayer, null, this);
     this.physics.arcade.overlap(this.enemyPool, this.explosionPool, this.destroyEnemy, null, this);
@@ -106,19 +109,35 @@ Game.prototype = {
   handleEnemyMovement: function(){
     for (var i = 0, len = this.enemyPool.children.length; i < len; i++) {
       var rocksColliding = this.getRocksColliding(this.enemyPool.children[i].x, this.enemyPool.children[i].y);
-      this.enemyPool.children[i].handleArificialMovement(this.rocks,rocksColliding);
+      this.enemyPool.children[i].handleArificialMovement(this.rocks,rocksColliding,null);
     }
   },
-  addEnemy: function() {
+  addEnemy: function(enemyID) {
+
     var currentEnemy = this.enemyPool.getFirstExists(false),
         positionIndex = this.game.rnd.between(0, this.availableSpaces.length - 1),
         position = this.availableSpaces[positionIndex];
+    var finalPos;
+    if(enemyID ==1)
+    {
+      finalPos = this.availableSpaces[this.availableSpaces.length - 1];
+    }
+    else if(enemyID ==2)
+    {
+      finalPos = this.availableSpaces[this.availableSpaces.length - 1];
+      finalPos.x=0;
+    }
+    else if(enemyID ==3)
+    {
+      finalPos = this.availableSpaces[this.availableSpaces.length - 1];
+      finalPos.y=0;
+    }
 
-    if (!currentEnemy) {
-      currentEnemy = new Enemy(this.game, position.x * 32, position.y * 32 - 4);
+//if (!currentEnemy) {
+      currentEnemy = new Enemy(this.game, finalPos.x * 32, finalPos.y * 32);
 
       this.enemyPool.add(currentEnemy);
-    }
+    //}
     // else {
     //   currentEnemy.reset(position.x * 32, position.y * 32 - 4);
     // }
@@ -165,20 +184,37 @@ Game.prototype = {
       if (this.rocks.layer.data[row - 1] !== undefined && this.rocks.layer.data[row - 1]) {
        rocksColliding.up = (this.rocks.layer.data[row - 1][column].index === this.level.rockId);
      }
-   }    if(column>=0){
+   }  
+    else
+    {
+      rocksColliding.up = true;
+    }  
+   if(column>=0){
       if (this.rocks.layer.data[row + 1] !== undefined && this.rocks.layer.data[row + 1]) {
        rocksColliding.down = (this.rocks.layer.data[row + 1][column].index === this.level.rockId);
      }
+    }
+    else
+    {
+      rocksColliding.down = true;
     }
     if(column - 1>=0 && row>=0){
       if (this.rocks.layer.data[row][column - 1] !== undefined && this.rocks.layer.data[row][column - 1]) {
       rocksColliding.left = (this.rocks.layer.data[row][column - 1].index === this.level.rockId);
       }
     } 
+    else
+    {
+      rocksColliding.left = true;
+    }
     if(row>=0){
       if (this.rocks.layer.data[row][column + 1] !== undefined  && this.rocks.layer.data[row][column + 1]) {
         rocksColliding.right = (this.rocks.layer.data[row][column + 1].index === this.level.rockId);
       }
+    }
+    else
+    {
+      rocksColliding.right = true;
     }
 
     return rocksColliding;

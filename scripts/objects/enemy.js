@@ -1,4 +1,4 @@
-var DEFAULT_ENEMY_SPEED = 128;
+var DEFAULT_ENEMY_SPEED = 160	;
 
 function Enemy(game, x, y) {
   Player.call(this, game, x, y, 'enemy', 0);
@@ -18,11 +18,14 @@ function Enemy(game, x, y) {
 Enemy.prototype = Object.create(Player.prototype);
 Enemy.prototype.constructor = Enemy;
 
-Enemy.prototype.handleArificialMovement = function(rocks,rocksColliding) {
+Enemy.prototype.handleArificialMovement = function(rocks,rocksColliding,moveChooserVal) {
   	
   	var moving = true;
 	this.game.physics.arcade.collide(this, this.rocks);
-	moveChooser = Math.floor((Math.random() * 5) + 1);
+	if(!moveChooserVal)
+		moveChooser = Math.floor((Math.random() * 5) + 1);
+	else
+		moveChooser=moveChooserVal;
 	console.log(moveChooser);
 	this.body.velocity.x = 0;
 	this.body.velocity.y = 0;
@@ -31,39 +34,71 @@ Enemy.prototype.handleArificialMovement = function(rocks,rocksColliding) {
 
 	if (moveChooser == 1)
 	{
-		if(this.alive)
+		if(rocksColliding.left!=false)
+		{	if(this.alive )
 			{
 				this.body.velocity.x = -this.speed;
   				this.facing = "left";
     			moving = true;
 			}
+		}
+		else
+		{
+			moveChooser= Math.floor(Math.random() * 5) + 2  ;
+			this.handleArificialMovement(rocks,rocksColliding,moveChooser);
+		}
 	}
 	else if (moveChooser == 2)
 	{
-		if (this.alive)
+		if (rocksColliding.right!=false)
+		{
+			if(this.alive)	
 			{
 				this.body.velocity.x = this.speed;
   				this.facing = "right";
     			moving = true;
 			}
+		}
+		else
+		{
+			moveChooser= Math.floor(Math.random() * 6) + 1  ;
+			this.handleArificialMovement(rocks,rocksColliding,moveChooser);
+		}
 	}
 	else if (moveChooser == 3)
 	{
-		if (this.alive)
+		if(rocksColliding.up != false)
+		{
+			if (this.alive)
 			{
 				this.body.velocity.y = -this.speed;
   				this.facing = "up";
     			moving = true;
 			}
+		}
+		else
+		{
+			moveChooser= Math.floor(Math.random() * 6) + 1  ;
+			this.handleArificialMovement(rocks,rocksColliding,moveChooser);
+		}
+		
 	}
-	else if (moveChooser == 4)
+	else if (moveChooser == 4 )
 	{
-		if (this.alive)
+		if(rocksColliding.down != false)
+		{
+			if (this.alive)
 			{
 				this.body.velocity.y = this.speed;
   				this.facing = "down";
     			moving = true;
 			}
+		}
+		else
+		{
+			moveChooser= Math.floor(Math.random() * 3) + 1  ;
+			this.handleArificialMovement(rocks,rocksColliding,moveChooser);	
+		}
 	}
 	else if (moveChooser == 5)
 	{
