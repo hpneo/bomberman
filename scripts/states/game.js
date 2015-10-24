@@ -13,9 +13,6 @@ Game.prototype = {
     this.map.addTilesetImage(level.title, level.tileset);
     this.map.setCollision(level.rockId, true, 'Rocks');
 
-    this.easystar = new EasyStar.js();
-    this.easystar.setGrid(level.data);
-    this.easystar.setAcceptableTiles([0]);
     //Musica
     this.backgroundMusic = this.add.audio('level_' + index, 0.6, true);
     this.backgroundMusic.play();
@@ -92,8 +89,8 @@ Game.prototype = {
     this.addEnemy(2);
     this.addEnemy(3);
 
-    this.handleEnemyMovement();
-    //this.game.time.events.loop(1000, this.handleEnemyMovement, this);
+    //this.handleEnemyMovement();
+    this.game.time.events.loop(1000, this.handleEnemyMovement, this);
   },
   update: function() {
     this.physics.arcade.collide(this.player, this.rocks);
@@ -111,14 +108,12 @@ Game.prototype = {
       this.createBomb(this.player.x + this.player.width / 2, this.player.y + this.player.height / 2, this.keyBomb, 0);
     }
 
+    if(!this.player.alive){
+      this.state.start('GameOver');
+    }
     //this.enemyDropBomb();
 
-    if(this.easystar){
-      this.easystar.calculate();
-    }
-
   },
-
   enemyDropBomb: function(enemy){
       //var enemyRandom = getRandomInt(0,this.enemyPool.children.length-1);
       //if (this.enemyPool.children[enemyRandom].canDropBombs(this.bombsPool)
@@ -126,7 +121,7 @@ Game.prototype = {
       //&& this.enemyPool.children[enemyRandom].alive) {
       //  this.createBomb(this.enemyPool.children[enemyRandom].x + this.enemyPool.children[enemyRandom].width / 2, this.enemyPool.children[enemyRandom].y + this.enemyPool.children[enemyRandom].height / 2, this.keyBomb, 0);
       //}
-      var range = 32;
+      var range = 64;
       console.log("EnemigoX: " +enemy.x);
       console.log("EnemigoY: " +enemy.y);
       console.log("PlayerX: " +this.player.x);
@@ -144,14 +139,7 @@ Game.prototype = {
       this.enemyPool.children[i].handleArificialMovement(this.rocks,rocksColliding,null);
       var enemy = this.enemyPool.children[i];
       this.enemyDropBomb(enemy);
-      this.easystar.findPath(this.enemyPool.children[i].x, 1,
-            100, 100,function(){
-        console.log("hola");
-      });
-      this.easystar.calculate();
-
     }
-
 
   },
   addEnemy: function(enemyID) {
