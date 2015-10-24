@@ -35,7 +35,7 @@ Enemy.prototype.handleArificialMovement = function(rocks,rocksColliding,moveChoo
 	//TODO:USE rocksColliding to create a fancy movement "IA"
 	if (moveChooser == 1)
 	{
-		if(rocksColliding.left!=false)
+		if(rocksColliding.left!=false && this.x-this.speed>0)
 		{	if(this.alive )
 			{
 				this.body.velocity.x = -this.speed;
@@ -46,7 +46,7 @@ Enemy.prototype.handleArificialMovement = function(rocks,rocksColliding,moveChoo
 	}
 	else if (moveChooser == 2)
 	{
-		if (rocksColliding.right!=false)
+		if (rocksColliding.right!=false && this.x+this.width+this.speed<this.game.world.bounds.right)
 		{
 			if(this.alive)
 			{
@@ -58,7 +58,7 @@ Enemy.prototype.handleArificialMovement = function(rocks,rocksColliding,moveChoo
 	}
 	else if (moveChooser == 3)
 	{
-		if(rocksColliding.up != false)
+		if(rocksColliding.up != false && this.y+this.height+this.speed<this.game.world.bounds.top )
 		{
 			if (this.alive)
 			{
@@ -71,7 +71,7 @@ Enemy.prototype.handleArificialMovement = function(rocks,rocksColliding,moveChoo
 	}
 	else if (moveChooser == 4 )
 	{
-		if(rocksColliding.down != false)
+		if(rocksColliding.down != false && this.y-this.speed>0)
 		{
 			if (this.alive)
 			{
