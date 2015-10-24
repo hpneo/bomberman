@@ -13,8 +13,9 @@ Game.prototype = {
     this.map.addTilesetImage(level.title, level.tileset);
     this.map.setCollision(level.rockId, true, 'Rocks');
 
-    console.log(level.data);
-
+    this.easystar = new EasyStar.js();
+    this.easystar.setGrid(level.data);
+    this.easystar.setAcceptableTiles([0]);
     //Musica
     this.backgroundMusic = this.add.audio('level_' + index, 0.6, true);
     this.backgroundMusic.play();
@@ -90,7 +91,9 @@ Game.prototype = {
     this.addEnemy(1);
     this.addEnemy(2);
     this.addEnemy(3);
-    this.game.time.events.loop(1000, this.handleEnemyMovement, this);
+
+    this.handleEnemyMovement();
+    //this.game.time.events.loop(1000, this.handleEnemyMovement, this);
   },
   update: function() {
     this.physics.arcade.collide(this.player, this.rocks);
@@ -111,6 +114,7 @@ Game.prototype = {
     this.enemyDropBomb();
 
   },
+
   enemyDropBomb: function(){
       var enemyRandom = getRandomInt(0,this.enemyPool.children.length-1);
       if (this.enemyPool.children[enemyRandom].canDropBombs(this.bombsPool)
@@ -120,10 +124,19 @@ Game.prototype = {
       }
   },
   handleEnemyMovement: function(){
-    for (var i = 0, len = this.enemyPool.children.length; i < len; i++) {
-      var rocksColliding = this.getRocksColliding(this.enemyPool.children[i].x, this.enemyPool.children[i].y);
-      this.enemyPool.children[i].handleArificialMovement(this.rocks,rocksColliding,null);
+   for (var i = 0, len = this.enemyPool.children.length; i < len; i++) {
+      //var rocksColliding = this.getRocksColliding(this.enemyPool.children[i].x, this.enemyPool.children[i].y);
+      // this.enemyPool.children[i].handleArificialMovement(this.rocks,rocksColliding,null);
+console.log(this.enemyPool.children[i].y);
+
+      // this.easystar.findPath(this.enemyPool.children[i].x, this.enemyPool.children[i].y, this.player.x, this.player.y,null);
+      this.easystar.findPath(this.enemyPool.children[i].x, 1,
+            100, 100,function(){
+        console.log("hola");
+      });
+      this.easystar.calculate();
     }
+
   },
   addEnemy: function(enemyID) {
 
