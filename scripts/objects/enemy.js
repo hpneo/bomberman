@@ -1,4 +1,4 @@
-var DEFAULT_ENEMY_SPEED = 160	;
+var DEFAULT_ENEMY_SPEED = 100	;
 
 function Enemy(game, x, y) {
   Player.call(this, game, x, y, 'enemy', 0);
@@ -22,7 +22,7 @@ function getRandomInt(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 };
 Enemy.prototype.handleArificialMovement = function(rocks,rocksColliding,moveChooserVal) {
-  	
+
   	var moving = true;
 	this.game.physics.arcade.collide(this, this.rocks);
 	if(!moveChooserVal || moveChooserVal==null)
@@ -44,27 +44,17 @@ Enemy.prototype.handleArificialMovement = function(rocks,rocksColliding,moveChoo
     			moving = true;
 			}
 		}
-		else
-		{
-			moveChooser= getRandomInt(2, 5) ;
-			this.handleArificialMovement(rocks,rocksColliding,moveChooser);
-		}
 	}
 	else if (moveChooser == 2)
 	{
 		if (rocksColliding.right!=false)
 		{
-			if(this.alive)	
+			if(this.alive)
 			{
 				this.body.velocity.x = this.speed;
   				this.facing = "right";
     			moving = true;
 			}
-		}
-		else
-		{
-			moveChooser= getRandomInt(1, 5) ;
-			this.handleArificialMovement(rocks,rocksColliding,moveChooser);
 		}
 	}
 	else if (moveChooser == 3)
@@ -78,12 +68,7 @@ Enemy.prototype.handleArificialMovement = function(rocks,rocksColliding,moveChoo
     			moving = true;
 			}
 		}
-		else
-		{
-			moveChooser= getRandomInt(1, 5) ;
-			this.handleArificialMovement(rocks,rocksColliding,moveChooser);
-		}
-		
+
 	}
 	else if (moveChooser == 4 )
 	{
@@ -96,24 +81,16 @@ Enemy.prototype.handleArificialMovement = function(rocks,rocksColliding,moveChoo
     			moving = true;
 			}
 		}
-		else
-		{
-			moveChooser= getRandomInt(1, 3) ;
-			this.handleArificialMovement(rocks,rocksColliding,moveChooser);	
-		}
+
 	}
-	else if (moveChooser == 5)
-	{
-		if(this.alive)
-		{
-    		moving = false;
-    		this.freeze();	
-			moveChooser= getRandomInt(1, 5) ;
-			this.handleArificialMovement(rocks,rocksColliding,moveChooser);	
-		}		
-	}
+	
   	if(moving)  {
     	this.animations.play(this.facing);
   	}
-	
+
+};
+
+
+Enemy.prototype.canDropBombs = function(bombsPool) {
+  return (bombsPool.total < this.maxBombs);
 };

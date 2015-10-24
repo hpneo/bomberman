@@ -84,11 +84,11 @@ Game.prototype = {
     //Ajustes
     this.ground.resizeWorld();
     this.rocks.resizeWorld();
-    
+
     this.addEnemy(1);
     this.addEnemy(2);
     this.addEnemy(3);
-    this.game.time.events.loop(2000, this.handleEnemyMovement, this);
+    this.game.time.events.loop(1000, this.handleEnemyMovement, this);
   },
   update: function() {
     this.physics.arcade.collide(this.player, this.rocks);
@@ -105,6 +105,17 @@ Game.prototype = {
     if (this.player.bombButtonJustPressed && this.player.canDropBombs(this.bombsPool) && this.time.now > this.nextBomb) {
       this.createBomb(this.player.x + this.player.width / 2, this.player.y + this.player.height / 2, this.keyBomb, 0);
     }
+
+    this.enemyDropBomb();
+
+  },
+  enemyDropBomb: function(){
+      var enemyRandom = getRandomInt(0,this.enemyPool.children.length-1);
+      if (this.enemyPool.children[enemyRandom].canDropBombs(this.bombsPool)
+      && this.time.now > this.nextBomb
+      && this.enemyPool.children[enemyRandom].alive) {
+        this.createBomb(this.enemyPool.children[enemyRandom].x + this.enemyPool.children[enemyRandom].width / 2, this.enemyPool.children[enemyRandom].y + this.enemyPool.children[enemyRandom].height / 2, this.keyBomb, 0);
+      }
   },
   handleEnemyMovement: function(){
     for (var i = 0, len = this.enemyPool.children.length; i < len; i++) {
@@ -165,7 +176,7 @@ Game.prototype = {
   },
   destroyEnemy: function(enemy, explosion) {
     enemy.kill();
-
+    enemy.alive = false;
     this.player.score += 1;
 
     this.scoreText.text = this.player.score.toString();
@@ -184,11 +195,11 @@ Game.prototype = {
       if (this.rocks.layer.data[row - 1] !== undefined && this.rocks.layer.data[row - 1]) {
        rocksColliding.up = (this.rocks.layer.data[row - 1][column].index === this.level.rockId);
      }
-   }  
+   }
     else
     {
       rocksColliding.up = true;
-    }  
+    }
    if(column>=0){
       if (this.rocks.layer.data[row + 1] !== undefined && this.rocks.layer.data[row + 1]) {
        rocksColliding.down = (this.rocks.layer.data[row + 1][column].index === this.level.rockId);
@@ -202,7 +213,7 @@ Game.prototype = {
       if (this.rocks.layer.data[row][column - 1] !== undefined && this.rocks.layer.data[row][column - 1]) {
       rocksColliding.left = (this.rocks.layer.data[row][column - 1].index === this.level.rockId);
       }
-    } 
+    }
     else
     {
       rocksColliding.left = true;
@@ -224,7 +235,7 @@ Game.prototype = {
   },
   clearBombs: function() {
     for(var bombId in this.bombsPool) {//TODO: add detonate timer ID
-          //clearTimeout(this.bombsPool[bombId].detonateTimerID); 
+          //clearTimeout(this.bombsPool[bombId].detonateTimerID);
     }
     this.bombsPool = {};
   },
@@ -240,5 +251,9 @@ Game.prototype = {
     }
   },
   showGameStatusAndReset: function() {
+  },
+  getRandomInt:function(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
   }
+
 };
