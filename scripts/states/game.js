@@ -111,7 +111,7 @@ Game.prototype = {
       this.createBomb(this.player.x + this.player.width / 2, this.player.y + this.player.height / 2, this.keyBomb, 0);
     }
 
-    this.enemyDropBomb();
+    //this.enemyDropBomb();
 
     if(this.easystar){
       this.easystar.calculate();
@@ -119,38 +119,40 @@ Game.prototype = {
 
   },
 
-  enemyDropBomb: function(){
-      var enemyRandom = getRandomInt(0,this.enemyPool.children.length-1);
-      if (this.enemyPool.children[enemyRandom].canDropBombs(this.bombsPool)
-      && this.time.now > this.nextBomb
-      && this.enemyPool.children[enemyRandom].alive) {
-        this.createBomb(this.enemyPool.children[enemyRandom].x + this.enemyPool.children[enemyRandom].width / 2, this.enemyPool.children[enemyRandom].y + this.enemyPool.children[enemyRandom].height / 2, this.keyBomb, 0);
+  enemyDropBomb: function(enemy){
+      //var enemyRandom = getRandomInt(0,this.enemyPool.children.length-1);
+      //if (this.enemyPool.children[enemyRandom].canDropBombs(this.bombsPool)
+      //&& this.time.now > this.nextBomb
+      //&& this.enemyPool.children[enemyRandom].alive) {
+      //  this.createBomb(this.enemyPool.children[enemyRandom].x + this.enemyPool.children[enemyRandom].width / 2, this.enemyPool.children[enemyRandom].y + this.enemyPool.children[enemyRandom].height / 2, this.keyBomb, 0);
+      //}
+      var range = 32;
+      console.log("EnemigoX: " +enemy.x);
+      console.log("EnemigoY: " +enemy.y);
+      console.log("PlayerX: " +this.player.x);
+      console.log("PlayerY: " +this.player.y);
+      if(enemy.alive && enemy.canDropBombs(this.bombsPool) && this.time.now > this.nextBomb)
+      {
+        if((enemy.x<=this.player.x && enemy.x+range>=this.player.x )|| (enemy.x>=this.player.x && enemy.x-range<=this.player.x ))
+          if((enemy.y<=this.player.y && enemy.y+range>=this.player.y )|| (enemy.y>=this.player.y && enemy.y-range<=this.player.y ))
+            this.createBomb(enemy.x + enemy.width / 2, enemy.y + enemy.height / 2, this.keyBomb, 0);
       }
   },
   handleEnemyMovement: function(){
-   for (var i = 0, len = this.enemyPool.children.length; i < len; i++) {
-     console.log("este es " + i);
-     this.findPathForEnemy(this.enemyPool.children[i],function(){
-       this.handleEnemyMovement();
-     });
+    for (var i = 0, len = this.enemyPool.children.length; i < len; i++) {
+      var rocksColliding = this.getRocksColliding(this.enemyPool.children[i].x, this.enemyPool.children[i].y);
+      this.enemyPool.children[i].handleArificialMovement(this.rocks,rocksColliding,null);
+      var enemy = this.enemyPool.children[i];
+      this.enemyDropBomb(enemy);
+      this.easystar.findPath(this.enemyPool.children[i].x, 1,
+            100, 100,function(){
+        console.log("hola");
+      });
+      this.easystar.calculate();
+
     }
 
-  },
-  findPathForEnemy:function(enemy, callback){
-    this.easystar.findPath(enemy.x/32, enemy.y/32,7,7,function(path){
-            console.log(this.enemyPool);
-          });
-  },
-  walkEnemy:function(path){
-    var i = 0;
-    console.log(path)
-     this.game.time.events.loop(Phaser.Timer.SECOND, function(){
-          if(i < path.length){
-            console.log("PATH: X " + path[i].x + " Y " +path[i].y);
-            this.enemyPool.children[0].x = path[i].x;
-            i++;
-          }
-     });
+
   },
   addEnemy: function(enemyID) {
 
