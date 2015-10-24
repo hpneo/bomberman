@@ -11,7 +11,7 @@ Preloader.prototype = {
 
 
     this.load.image('background-intro','assets/images/intro-2.png');
-  	this.load.image('background-menu','assets/images/menu-3.jpg');
+  	this.load.image('background-gameover','assets/images/gameover-1.jpg');
   	this.load.image('continue-intro','assets/images/intro-continue.png');
   	this.load.image('play-menu','assets/images/menu-play.png');
 
@@ -33,7 +33,7 @@ Preloader.prototype = {
     this.load.spritesheet('electrode','assets/images/bomb2.png', 32, 32);
     this.load.spritesheet('explosion','assets/images/fire_2.png', 32, 32);
 
-    this.load.audio('music-menu', 'assets/audio/menu.mp3');
+    this.load.audio('music-gameover', 'assets/audio/menu.mp3');
     this.load.audio('music-intro', 'assets/audio/opening.mp3');
     this.load.audio('level_1', 'assets/audio/level1.mp3');
     this.load.audio('level_2', 'assets/audio/level2.mp3');
