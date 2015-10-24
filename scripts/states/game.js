@@ -88,7 +88,7 @@ Game.prototype = {
     this.addEnemy(1);
     this.addEnemy(2);
     this.addEnemy(3);
-    this.game.time.events.loop(1000, this.handleEnemyMovement, this);
+    this.game.time.events.loop(100, this.handleEnemyMovement, this);
   },
   update: function() {
     this.physics.arcade.collide(this.player, this.rocks);
@@ -106,21 +106,34 @@ Game.prototype = {
       this.createBomb(this.player.x + this.player.width / 2, this.player.y + this.player.height / 2, this.keyBomb, 0);
     }
 
-    this.enemyDropBomb();
+    //this.enemyDropBomb();
 
   },
-  enemyDropBomb: function(){
-      var enemyRandom = getRandomInt(0,this.enemyPool.children.length-1);
-      if (this.enemyPool.children[enemyRandom].canDropBombs(this.bombsPool)
-      && this.time.now > this.nextBomb
-      && this.enemyPool.children[enemyRandom].alive) {
-        this.createBomb(this.enemyPool.children[enemyRandom].x + this.enemyPool.children[enemyRandom].width / 2, this.enemyPool.children[enemyRandom].y + this.enemyPool.children[enemyRandom].height / 2, this.keyBomb, 0);
+  enemyDropBomb: function(enemy){
+      //var enemyRandom = getRandomInt(0,this.enemyPool.children.length-1);
+      //if (this.enemyPool.children[enemyRandom].canDropBombs(this.bombsPool)
+      //&& this.time.now > this.nextBomb
+      //&& this.enemyPool.children[enemyRandom].alive) {
+      //  this.createBomb(this.enemyPool.children[enemyRandom].x + this.enemyPool.children[enemyRandom].width / 2, this.enemyPool.children[enemyRandom].y + this.enemyPool.children[enemyRandom].height / 2, this.keyBomb, 0);
+      //}
+      var range = 32;
+      console.log("EnemigoX: " +enemy.x);
+      console.log("EnemigoY: " +enemy.y);
+      console.log("PlayerX: " +this.player.x);
+      console.log("PlayerY: " +this.player.y);
+      if(enemy.alive && enemy.canDropBombs(this.bombsPool) && this.time.now > this.nextBomb)
+      {
+        if((enemy.x<=this.player.x && enemy.x+range>=this.player.x )|| (enemy.x>=this.player.x && enemy.x-range<=this.player.x ))
+          if((enemy.y<=this.player.y && enemy.y+range>=this.player.y )|| (enemy.y>=this.player.y && enemy.y-range<=this.player.y ))
+            this.createBomb(enemy.x + enemy.width / 2, enemy.y + enemy.height / 2, this.keyBomb, 0);
       }
   },
   handleEnemyMovement: function(){
     for (var i = 0, len = this.enemyPool.children.length; i < len; i++) {
       var rocksColliding = this.getRocksColliding(this.enemyPool.children[i].x, this.enemyPool.children[i].y);
       this.enemyPool.children[i].handleArificialMovement(this.rocks,rocksColliding,null);
+      var enemy = this.enemyPool.children[i];
+      this.enemyDropBomb(enemy);
     }
   },
   addEnemy: function(enemyID) {
