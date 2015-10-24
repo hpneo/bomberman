@@ -13,8 +13,9 @@ Game.prototype = {
     this.map.addTilesetImage(level.title, level.tileset);
     this.map.setCollision(level.rockId, true, 'Rocks');
 
-    console.log(level.data);
-
+    this.easystar = new EasyStar.js();
+    this.easystar.setGrid(level.data);
+    this.easystar.setAcceptableTiles([0]);
     //Musica
     this.backgroundMusic = this.add.audio('level_' + index, 0.6, true);
     this.backgroundMusic.play();
@@ -90,7 +91,9 @@ Game.prototype = {
     this.addEnemy(1);
     this.addEnemy(2);
     this.addEnemy(3);
-    this.game.time.events.loop(1000, this.handleEnemyMovement, this);
+
+    this.handleEnemyMovement();
+    //this.game.time.events.loop(1000, this.handleEnemyMovement, this);
   },
   update: function() {
     this.physics.arcade.collide(this.player, this.rocks);
@@ -110,7 +113,12 @@ Game.prototype = {
 
     this.enemyDropBomb();
 
+    if(this.easystar){
+      this.easystar.calculate();
+    }
+
   },
+
   enemyDropBomb: function(){
       var enemyRandom = getRandomInt(0,this.enemyPool.children.length-1);
       if (this.enemyPool.children[enemyRandom].canDropBombs(this.bombsPool)
@@ -120,10 +128,29 @@ Game.prototype = {
       }
   },
   handleEnemyMovement: function(){
-    for (var i = 0, len = this.enemyPool.children.length; i < len; i++) {
-      var rocksColliding = this.getRocksColliding(this.enemyPool.children[i].x, this.enemyPool.children[i].y);
-      this.enemyPool.children[i].handleArificialMovement(this.rocks,rocksColliding,null);
+   for (var i = 0, len = this.enemyPool.children.length; i < len; i++) {
+     console.log("este es " + i);
+     this.findPathForEnemy(this.enemyPool.children[i],function(){
+       this.handleEnemyMovement();
+     });
     }
+
+  },
+  findPathForEnemy:function(enemy, callback){
+    this.easystar.findPath(enemy.x/32, enemy.y/32,7,7,function(path){
+            console.log(this.enemyPool);
+          });
+  },
+  walkEnemy:function(path){
+    var i = 0;
+    console.log(path)
+     this.game.time.events.loop(Phaser.Timer.SECOND, function(){
+          if(i < path.length){
+            console.log("PATH: X " + path[i].x + " Y " +path[i].y);
+            this.enemyPool.children[0].x = path[i].x;
+            i++;
+          }
+     });
   },
   addEnemy: function(enemyID) {
 
