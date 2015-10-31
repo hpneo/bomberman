@@ -8,8 +8,6 @@ Preloader.prototype = {
   	this.preloadBar.scale.setTo(3);
   	this.load.setPreloadSprite(this.preloadBar);
   	//Carga de assets
-
-
     this.load.image('background-intro','assets/images/intro-2.png');
   	this.load.image('background-gameover','assets/images/gameover-1.jpg');
   	this.load.image('continue-intro','assets/images/intro-continue.png');
@@ -40,7 +38,8 @@ Preloader.prototype = {
     this.load.audio('level_3', 'assets/audio/level3.mp3');
     this.load.audio("explosion", "assets/audio/bomb.ogg");
     this.load.audio("powerup", "assets/audio/powerup.ogg");
-    this.load.audio("click", "assets/audio/click.ogg");
+
+    this.load.video('intro', 'assets/videos/intro.mp4');
   },
   create: function() {
     this.state.start('Intro');
