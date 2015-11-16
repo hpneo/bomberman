@@ -8,6 +8,10 @@ function Player(game, x, y, key, frame) {
   this.bombStrength = 1;
   this.score = 0;
   this.alive = true;
+  this.fila = y;
+  this.columna = x;
+  this.x = this.columna * 32;
+  this.y = this.fila * 32;
   this.speed = DEFAULT_PLAYER_SPEED;
   this.animations.add('up', [15, 12, 13, 14], 8, true);
   this.animations.add('left', [5, 6, 7, 4], 8, true);
@@ -36,26 +40,48 @@ Player.prototype.handleInput = function(rocks) {
   this.handleBombInput();
 };
 
-Player.prototype.handleMotionInput = function(rocks) {
+Player.prototype.handleMotionInput = function(level) {
   var moving = true;
-  this.game.physics.arcade.collide(this, this.rocks);
-
-  if (this.game.input.keyboard.isDown(Phaser.Keyboard.LEFT)) {
-    this.body.velocity.y = 0;
-    this.body.velocity.x = -this.speed;
-    this.facing = "left";
-  } else if (this.game.input.keyboard.isDown(Phaser.Keyboard.RIGHT)) {
-    this.body.velocity.y = 0;
-    this.body.velocity.x = this.speed;
-    this.facing = "right";
-  } else if (this.game.input.keyboard.isDown(Phaser.Keyboard.UP)) {
-    this.body.velocity.x = 0;
-    this.body.velocity.y = -this.speed;
+  var matriz = level.data;
+  if (this.game.input.keyboard.isDown(Phaser.Keyboard.UP)) {
+    console.log(this.fila);
+    console.log(matriz.length);
+    console.log(this.columna);
+    console.log(matriz[0].length);
+    console.log(matriz);
     this.facing = "up";
+    if( (this.fila - 1) >= 0){
+      if(matriz[this.fila - 1][this.columna] == 0){
+        this.y = (this.fila - 1) * 32;
+        this.fila -= 1;
+      }
+    }
   } else if (this.game.input.keyboard.isDown(Phaser.Keyboard.DOWN)) {
-    this.body.velocity.x = 0;
-    this.body.velocity.y = this.speed;
     this.facing = "down";
+    if( (this.fila + 1) <= (matriz.length - 1)){
+      if(matriz[this.fila + 1][this.columna] == 0){
+        this.y = (this.fila + 1) * 32;
+        this.fila += 1;
+      }
+    }
+
+  } else if (this.game.input.keyboard.isDown(Phaser.Keyboard.LEFT)) {
+    this.facing = "left";
+    if( (this.columna - 1) >= 0){
+      if(matriz[this.fila][this.columna - 1] == 0){
+        this.x = (this.columna - 1) * 32;
+        this.columna -= 1;
+      }
+    }
+  } else if (this.game.input.keyboard.isDown(Phaser.Keyboard.RIGHT)) {
+    this.facing = "right";
+
+    if( (this.columna + 1) <= (matriz[0].length - 1)){
+      if(matriz[this.fila][this.columna + 1] == 0){
+        this.x = (this.columna + 1) * 32;
+        this.columna += 1;
+      }
+    }
   } else {
     moving = false;
     this.freeze();

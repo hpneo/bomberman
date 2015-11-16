@@ -76,7 +76,7 @@ Game.prototype = {
 
     //Player
     var pos=this.availableSpaces[this.availableSpaces.length - 1];
-    this.player = new Player(this.game, 32 * pos.x, 32 * 0, 'red', 0);
+    this.player = new Player(this.game, 14, 0, 'red', 0);
     this.bombs = this.game.add.group();
 
     this.scoreText = this.add.text(this.game.world.width - 30, 10, this.player.score.toString(), font);
@@ -89,10 +89,14 @@ Game.prototype = {
     this.addEnemy(2);
     this.addEnemy(3);
 
+    // this.game.time.events.loop(1000, function() {
+    //
+    // }, this);
     //this.handleEnemyMovement();
-    this.game.time.events.loop(1000, this.handleEnemyMovement, this);
+    // this.game.time.events.loop(1000, this.handleEnemyMovement, this);
   },
   update: function() {
+
     this.physics.arcade.collide(this.player, this.rocks);
     this.physics.arcade.collide(this.enemyPool, this.rocks);
     this.physics.arcade.collide(this.player, this.enemyPool);
@@ -101,8 +105,9 @@ Game.prototype = {
     this.physics.arcade.overlap(this.player, this.explosionPool, this.destroyPlayer, null, this);
     this.physics.arcade.overlap(this.enemyPool, this.explosionPool, this.destroyEnemy, null, this);
 
-    this.player.handleMotionInput(this.rocks);
+    this.player.handleMotionInput(this.level);
     this.player.handleBombInput();
+
 
     if (this.player.bombButtonJustPressed && this.player.canDropBombs(this.bombsPool) && this.time.now > this.nextBomb) {
       this.createBomb(this.player.x + this.player.width / 2, this.player.y + this.player.height / 2, this.keyBomb, 0);
@@ -135,10 +140,10 @@ Game.prototype = {
   },
   handleEnemyMovement: function(){
     for (var i = 0, len = this.enemyPool.children.length; i < len; i++) {
-      var rocksColliding = this.getRocksColliding(this.enemyPool.children[i].x, this.enemyPool.children[i].y);
-      this.enemyPool.children[i].handleArificialMovement(this.rocks,rocksColliding,null);
-      var enemy = this.enemyPool.children[i];
-      this.enemyDropBomb(enemy);
+      // var rocksColliding = this.getRocksColliding(this.enemyPool.children[i].x, this.enemyPool.children[i].y);
+      // var enemy = this.enemyPool.children[i];
+      // this.enemyDropBomb(enemy);
+
     }
 
   },
@@ -147,6 +152,7 @@ Game.prototype = {
     var currentEnemy = this.enemyPool.getFirstExists(false),
         positionIndex = this.game.rnd.between(0, this.availableSpaces.length - 1),
         position = this.availableSpaces[positionIndex];
+
     var finalPos;
     if(enemyID ==1)
     {
@@ -164,8 +170,8 @@ Game.prototype = {
     }
 
 //if (!currentEnemy) {
-      currentEnemy = new Enemy(this.game, finalPos.x * 32, finalPos.y * 32);
-
+      currentEnemy = new Enemy(this.game, finalPos.x, finalPos.y);
+      currentEnemy.easyStarMovement(this.player,this.level);
       this.enemyPool.add(currentEnemy);
     //}
     // else {
