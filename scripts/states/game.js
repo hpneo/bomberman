@@ -89,14 +89,9 @@ Game.prototype = {
     this.addEnemy(2);
     this.addEnemy(3);
 
-    // this.game.time.events.loop(1000, function() {
-    //
-    // }, this);
-    //this.handleEnemyMovement();
-    // this.game.time.events.loop(1000, this.handleEnemyMovement, this);
   },
   update: function() {
-
+    // this.enemyPool.children[0].easyStarMovement(this.player,this.level);
     this.physics.arcade.collide(this.player, this.rocks);
     this.physics.arcade.collide(this.enemyPool, this.rocks);
     this.physics.arcade.collide(this.player, this.enemyPool);
@@ -152,7 +147,6 @@ Game.prototype = {
     var currentEnemy = this.enemyPool.getFirstExists(false),
         positionIndex = this.game.rnd.between(0, this.availableSpaces.length - 1),
         position = this.availableSpaces[positionIndex];
-
     var finalPos;
     if(enemyID ==1)
     {
@@ -171,7 +165,7 @@ Game.prototype = {
 
 //if (!currentEnemy) {
       currentEnemy = new Enemy(this.game, finalPos.x, finalPos.y);
-      currentEnemy.easyStarMovement(this.player,this.level);
+
       this.enemyPool.add(currentEnemy);
     //}
     // else {
