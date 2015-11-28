@@ -3,8 +3,14 @@ function Game() {
   this.bombRate = 500;
 }
 
+Game.CURRENT_LEVEL = 0;
+
 Game.prototype = {
   loadLevel: function(index) {
+    if (index > 3) {
+      Game.CURRENT_LEVEL = index = 1;
+    }
+
     var levels = this.game.cache.getJSON('levels'),
     levelsIndex = index - 1,
     level = levels[levelsIndex];
@@ -23,7 +29,7 @@ Game.prototype = {
     //Mundo
     this.game.physics.startSystem(Phaser.Physics.ARCADE);
 
-    this.loadLevel(this.game.rnd.between(1, 3));
+    this.loadLevel(++Game.CURRENT_LEVEL);
 
     this.ground = this.map.createLayer('Ground'),
     this.rocks = this.map.createLayer('Rocks');
@@ -47,7 +53,6 @@ Game.prototype = {
     this.explosionPool.setAll('body.immovable', true);
     this.explosionPool.setAll('body.allowGravity', true);
     this.explosionRange = 1;
-
 
     this.enemyPool = this.add.group();
 
@@ -77,6 +82,7 @@ Game.prototype = {
     //Player
     var pos = this.availableSpaces[this.availableSpaces.length - 1];
     this.player = new Player(this.game, 14, 0, 'red', 0);
+    this.player.score = 0;
     this.bombs = this.game.add.group();
 
     this.scoreText = this.add.text(this.game.world.width - 30, 10, this.player.score.toString(), font);
@@ -111,7 +117,11 @@ Game.prototype = {
     }
 
     if (this.player.isMoving) {
-      this.enemyPool.callAll('easyStarMovement', null, this.player, this.level);
+      try {
+        this.enemyPool.callAll('easyStarMovement', null, this.player, this.level);
+      } catch (e) {
+
+      }
     }
     //this.enemyDropBomb();
   },
@@ -156,6 +166,7 @@ Game.prototype = {
     }
 
     currentEnemy = new Enemy(this.game, finalPos.x, finalPos.y);
+    currentEnemy.alive = true;
 
     this.enemyPool.add(currentEnemy);
 
@@ -185,9 +196,15 @@ Game.prototype = {
   destroyEnemy: function(enemy, explosion) {
     enemy.kill();
     enemy.alive = false;
-    this.player.score += 1;
+    this.player.score = this.enemyPool.children.filter(function(e) { return e.alive === false; }).length;
 
     this.scoreText.text = this.player.score.toString();
+
+    if (this.player.score === 3) {
+      this.backgroundMusic.stop();
+      this.player.score = 0;
+      this.game.state.start('Game');
+    }
   },
   getRocksColliding: function(x, y) {
     var column = Math.floor(x / 32),

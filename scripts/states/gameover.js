@@ -20,8 +20,8 @@ GameOver.prototype = {
           strokeThickness: 4
         };
 
-    this.title = this.add.text(this.game.world.width / 2, 50, 'Game Over :,C', fontTitle);
-    this.title.anchor.setTo(0.5);
+    // this.title = this.add.text(this.game.world.width / 2, 50, 'Game Over :,C', fontTitle);
+    // this.title.anchor.setTo(0.5);
 
     this.buttonPlay = this.game.add.button(this.game.width/2,this.game.height-50,'play-menu',this.playGame,this);
     this.buttonPlay.anchor.setTo(0.5,0.5);
