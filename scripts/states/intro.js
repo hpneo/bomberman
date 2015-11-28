@@ -74,7 +74,15 @@ Intro.prototype = {
     this.introVideo.addToWorld(240, 160, 0.5, 0.5);
     this.introVideo.play();
     console.log('En el Intro');
-
+  },
+  update:function(){
+    this.scapeIntro();
+  },
+  scapeIntro:function(){
+    if(this.game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR)){
+      this.introVideo.stop();
+      this.state.start('Game');
+    }
   },
   showButton: function() {
     //Continuar
