@@ -4,6 +4,15 @@ function Game() {
 }
 
 Game.CURRENT_LEVEL = 0;
+Game.BERRIES = [
+  'red',
+  'yellow',
+  'blue',
+  'green',
+  'pink',
+  'white',
+  'black'
+];
 
 Game.prototype = {
   loadLevel: function(index) {
@@ -40,22 +49,25 @@ Game.prototype = {
     this.rocks.immovable = true;
 
     //Bombas
-    this.bombsPool = this.add.group();
-    this.bombsPool.enableBody = true;
-    this.bombsPool.physicsBodyType = Phaser.Physics.ARCADE;
-    this.bombsPool.setAll('body.immovable', true);
-    this.bombsPool.setAll('body.allowGravity', false);
+    this.bombs = this.add.group();
+    this.bombs.enableBody = true;
+    this.bombs.physicsBodyType = Phaser.Physics.ARCADE;
+    this.bombs.setAll('body.immovable', true);
+    this.bombs.setAll('body.allowGravity', false);
+
+    this.berries = this.add.group();
+    this.bombs.enableBody = true;
 
     this.keyBomb = 'voltorb';
     this.frameBomb = 0;
-    this.explosionPool = this.add.group();
-    this.explosionPool.enableBody = true;
-    this.explosionPool.physicsBodyType = Phaser.Physics.ARCADE;
-    this.explosionPool.setAll('body.immovable', true);
-    this.explosionPool.setAll('body.allowGravity', true);
+    this.explosions = this.add.group();
+    this.explosions.enableBody = true;
+    this.explosions.physicsBodyType = Phaser.Physics.ARCADE;
+    this.explosions.setAll('body.immovable', true);
+    this.explosions.setAll('body.allowGravity', true);
     this.explosionRange = 1;
 
-    this.enemyPool = this.add.group();
+    this.enemies = this.add.group();
 
     //this.game.time.events.loop(5000, this.addEnemy, this);
     this.cursors = game.input.keyboard.createCursorKeys();
@@ -96,20 +108,24 @@ Game.prototype = {
       this.addEnemy(i + 1);
     }
 
+    for (var i = 0; i < this.levelIndex * 2; i++) {
+      this.addBerry();
+    }
   },
   update: function() {
     this.physics.arcade.collide(this.player, this.rocks);
-    this.physics.arcade.collide(this.enemyPool, this.rocks);
-    this.physics.arcade.collide(this.player, this.enemyPool);
-    this.physics.arcade.collide(this.enemyPool, this.bombsPool);
-    this.physics.arcade.collide(this.player, this.bombsPool);
-    this.physics.arcade.overlap(this.player, this.explosionPool, this.destroyPlayer, null, this);
-    this.physics.arcade.overlap(this.enemyPool, this.explosionPool, this.destroyEnemy, null, this);
+    this.physics.arcade.collide(this.enemies, this.rocks);
+    this.physics.arcade.collide(this.player, this.enemies);
+    this.physics.arcade.collide(this.enemies, this.bombs);
+    this.physics.arcade.collide(this.player, this.bombs);
+    this.physics.arcade.overlap(this.player, this.explosions, this.destroyPlayer, null, this);
+    this.physics.arcade.overlap(this.enemies, this.explosions, this.destroyEnemy, null, this);
+    this.physics.arcade.overlap(this.player, this.berries, this.applyBerry, null, this);
 
     this.player.handleMotionInput(this.level);
     this.player.handleBombInput();
 
-    if (this.player.bombButtonJustPressed && this.player.canDropBombs(this.bombsPool) && this.time.now > this.nextBomb) {
+    if (this.player.bombButtonJustPressed && this.player.canDropBombs(this.bombs) && this.time.now > this.nextBomb) {
       this.createBomb(this.player.x + this.player.width / 2, this.player.y + this.player.height / 2, this.keyBomb, 0);
     }
 
@@ -119,28 +135,28 @@ Game.prototype = {
 
     if (this.player.isMoving) {
       try {
-        this.enemyPool.callAll('easyStarMovement', null, this.player, this.level);
+        this.enemies.callAll('easyStarMovement', null, this.player, this.level);
       } catch (e) {
 
       }
     }
 
-    var enemyRandom = this.game.rnd.between(0, this.enemyPool.children.length - 1);
+    var enemyRandom = this.game.rnd.between(0, this.enemies.children.length - 1);
 
-    if (this.enemyPool.children[enemyRandom].alive) {
-      this.enemyDropBomb(this.enemyPool.children[enemyRandom]);
+    if (this.enemies.children[enemyRandom].alive) {
+      this.enemyDropBomb(this.enemies.children[enemyRandom]);
     }
   },
   enemyDropBomb: function(enemy) {
-    if (enemy.alive && enemy.canDropBombs(this.bombsPool) && this.time.now > this.nextBomb)
+    if (enemy.alive && enemy.canDropBombs(this.bombs) && this.time.now > this.nextBomb)
     {
       if (Math.abs(this.player.row - enemy.row) <= 3 && Math.abs(this.player.column - enemy.column) <= 3) {
         this.createBomb(enemy.x + enemy.width / 2, enemy.y + enemy.height / 2, this.keyBomb, 0);
       }
     }
   },
-  addEnemy: function(enemyID) {
-    var currentEnemy = this.enemyPool.getFirstExists(false),
+  addEnemy: function() {
+    var currentEnemy = this.enemies.getFirstExists(false),
         positionIndex = this.game.rnd.between(0, this.availableSpaces.length - 1),
         position = this.availableSpaces[positionIndex],
         finalPos;
@@ -148,20 +164,29 @@ Game.prototype = {
     currentEnemy = new Enemy(this.game, position.x, position.y);
     currentEnemy.alive = true;
 
-    this.enemyPool.add(currentEnemy);
+    this.enemies.add(currentEnemy);
 
     currentEnemy.easyStarMovement(this.player, this.level);
   },
+  addBerry: function() {
+    var currentEnemy = this.berries.getFirstExists(false),
+        positionIndex = this.game.rnd.between(0, this.availableSpaces.length - 1),
+        position = this.availableSpaces[positionIndex];
+
+    currentBerry = new Berry(this.game, position.x, position.y, Game.BERRIES[this.game.rnd.between(0, Game.BERRIES.length - 1)]);
+
+    this.berries.add(currentBerry);
+  },
   createBomb: function(x, y, key, frame) {
     var rocksColliding = this.getRocksColliding(x, y),
-        currentBomb = this.bombsPool.getFirstExists(false);
+        currentBomb = this.bombs.getFirstExists(false);
 
     this.nextBomb = this.time.now + this.bombRate;
 
     if (!currentBomb) {
-      currentBomb = new Bomb(this.game, x, y, key, frame, this.explosionPool, this.explosionRange, rocksColliding);
+      currentBomb = new Bomb(this.game, x, y, key, frame, this.explosions, this.explosionRange, rocksColliding);
 
-      this.bombsPool.add(currentBomb);
+      this.bombs.add(currentBomb);
     }
     else{
       currentBomb.resetBomb(x, y, rocksColliding);
@@ -176,15 +201,46 @@ Game.prototype = {
   destroyEnemy: function(enemy, explosion) {
     enemy.kill();
     enemy.alive = false;
-    this.player.score = this.enemyPool.children.filter(function(e) { return e.alive === false; }).length;
+
+    this.player.score = this.enemies.children.filter(function(e) { return e.alive === false; }).length;
 
     this.scoreText.text = this.player.score.toString();
 
-    if (this.player.score === this.enemyPool.children.length) {
+    if (this.player.score === this.enemies.children.length) {
       this.backgroundMusic.stop();
       this.player.score = 0;
       this.game.state.start('Game');
     }
+  },
+  applyBerry: function(player, berry) {
+    switch (berry.identifier) {
+      case 'black':
+        this.enemies.setAll('maxBombs', 0);
+        this.bombs.callAll('kill');
+        this.explosions.callAll('kill');
+
+        setTimeout(function() {
+          this.enemies.setAll('maxBombs', 1);
+        }.bind(this), 5000);
+        break;
+      case 'red':
+        this.enemies.setAll('maxBombs', 2);
+
+        setTimeout(function() {
+          this.enemies.setAll('maxBombs', 1);
+        }.bind(this), 5000);
+        break;
+      case 'green':
+        this.bombs.callAll('kill');
+        this.explosions.callAll('kill');
+
+        this.enemies.children.forEach(function(enemy) {
+          this.destroyEnemy(enemy);
+        }, this);
+        break;
+    }
+
+    berry.kill();
   },
   getRocksColliding: function(x, y) {
     var column = Math.floor(x / 32),
@@ -239,10 +295,10 @@ Game.prototype = {
     this.player.resetForNewRound();
   },
   clearBombs: function() {
-    for(var bombId in this.bombsPool) {//TODO: add detonate timer ID
-      //clearTimeout(this.bombsPool[bombId].detonateTimerID);
+    for(var bombId in this.bombs) {//TODO: add detonate timer ID
+      //clearTimeout(this.bombs[bombId].detonateTimerID);
     }
-    this.bombsPool = {};
+    this.bombs = {};
   },
   resetForNewRound: function() {
     this.clearBombs();
@@ -251,7 +307,7 @@ Game.prototype = {
   calculateRoundWinner: function() {
     if(this.player.alive)
     {
-      if(this.enemyPool.count == 0)
+      if(this.enemies.count == 0)
       this.showGameStatusAndReset();
     }
   },
