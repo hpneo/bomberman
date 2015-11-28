@@ -24,6 +24,7 @@ Game.prototype = {
     this.backgroundMusic.play();
 
     this.level = level;
+    this.levelIndex = index;
   },
   create: function() {
     //Mundo
@@ -91,9 +92,9 @@ Game.prototype = {
     this.ground.resizeWorld();
     this.rocks.resizeWorld();
 
-    this.addEnemy(1);
-    this.addEnemy(2);
-    this.addEnemy(3);
+    for (var i = 0; i < this.levelIndex * 3; i++) {
+      this.addEnemy(i + 1);
+    }
 
   },
   update: function() {
@@ -133,7 +134,7 @@ Game.prototype = {
   enemyDropBomb: function(enemy) {
     if (enemy.alive && enemy.canDropBombs(this.bombsPool) && this.time.now > this.nextBomb)
     {
-      if (Math.abs(this.player.row - enemy.row) <= 4 && Math.abs(this.player.column - enemy.column) <= 4) {
+      if (Math.abs(this.player.row - enemy.row) <= 3 && Math.abs(this.player.column - enemy.column) <= 3) {
         this.createBomb(enemy.x + enemy.width / 2, enemy.y + enemy.height / 2, this.keyBomb, 0);
       }
     }
@@ -144,21 +145,7 @@ Game.prototype = {
         position = this.availableSpaces[positionIndex],
         finalPos;
 
-    switch (enemyID) {
-      case 1:
-        finalPos = this.availableSpaces[this.availableSpaces.length - 1];
-        break;
-      case 2:
-        finalPos = this.availableSpaces[this.availableSpaces.length - 1];
-        finalPos.x = 0;
-        break;
-      case 3:
-        finalPos = this.availableSpaces[this.availableSpaces.length - 1];
-        finalPos.y = 0;
-        break;
-    }
-
-    currentEnemy = new Enemy(this.game, finalPos.x, finalPos.y);
+    currentEnemy = new Enemy(this.game, position.x, position.y);
     currentEnemy.alive = true;
 
     this.enemyPool.add(currentEnemy);
@@ -171,7 +158,7 @@ Game.prototype = {
 
     this.nextBomb = this.time.now + this.bombRate;
 
-    if(!currentBomb) {
+    if (!currentBomb) {
       currentBomb = new Bomb(this.game, x, y, key, frame, this.explosionPool, this.explosionRange, rocksColliding);
 
       this.bombsPool.add(currentBomb);
@@ -193,7 +180,7 @@ Game.prototype = {
 
     this.scoreText.text = this.player.score.toString();
 
-    if (this.player.score === 3) {
+    if (this.player.score === this.enemyPool.children.length) {
       this.backgroundMusic.stop();
       this.player.score = 0;
       this.game.state.start('Game');

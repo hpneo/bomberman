@@ -52,7 +52,8 @@ Enemy.prototype.easyStarMovement = function(player, level) {
 
     this.path = path;
 
-    this.timer = this.game.time.events.loop(800, function() {
+    this.timer = this.game.time.create(false);
+    this.timer.loop(450, function() {
       if (i < path.length) {
         var newX = (path[i].x) * 32,
             newY = (path[i].y) * 32;
@@ -74,7 +75,7 @@ Enemy.prototype.easyStarMovement = function(player, level) {
         this.game.add.tween(this).to({
           x: newX,
           y: newY
-        }, 750, Phaser.Easing.Linear.None, true).onComplete.add(function() {
+        }, 400, Phaser.Easing.Linear.None, true).onComplete.add(function() {
           if (path[i]) {
             this.row = path[i].y;
             this.column = path[i].x;
@@ -89,16 +90,16 @@ Enemy.prototype.easyStarMovement = function(player, level) {
       else {
         this.animations.stop();
       }
-    }, this).timer;
+    }, this);
 
-    this.timer.start(0);
+    this.timer.start();
   }.bind(this));
 
   easystar.calculate();
 };
 
 Enemy.prototype.stopEasystar = function() {
-  this.timer.stop(true);
+  this.timer.destroy();
   this.animations.stop();
 };
 
