@@ -6,13 +6,15 @@ function Enemy(game, x, y) {
   this.game = game;
   this.game.physics.enable(this);
   this.body.allowGravity = false;
+  this.body.setSize(24, 24, 4, 24);
+  this.anchor.setTo(0, 0);
   this.maxBombs = 1;
   this.speed = DEFAULT_PLAYER_SPEED;
   this.alive = true;
-  this.fila = y;
-  this.columna = x;
-  this.x = this.columna * 32;
-  this.y = this.fila * 32;
+  this.row = y;
+  this.column = x;
+  this.x = this.column * 32;
+  this.y = this.row * 32;
   this.animations.add('up', [15, 12, 13, 14], 8, true);
   this.animations.add('left', [5, 6, 7, 4], 8, true);
   this.animations.add('right', [9, 10, 11, 8], 8, true);
@@ -50,7 +52,7 @@ Enemy.prototype.easyStarMovement = function(player, level) {
 
     this.path = path;
 
-    this.timer = this.game.time.events.loop(1000, function() {
+    this.timer = this.game.time.events.loop(800, function() {
       if (i < path.length) {
         var newX = (path[i].x) * 32,
             newY = (path[i].y) * 32;
@@ -72,7 +74,12 @@ Enemy.prototype.easyStarMovement = function(player, level) {
         this.game.add.tween(this).to({
           x: newX,
           y: newY
-        }, 850, Phaser.Easing.Linear.None, true);
+        }, 750, Phaser.Easing.Linear.None, true).onComplete.add(function() {
+          if (path[i]) {
+            this.row = path[i].y;
+            this.column = path[i].x;
+          }
+        }, this);
 
         // this.x = newX;
         // this.y = newY;

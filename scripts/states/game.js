@@ -123,26 +123,19 @@ Game.prototype = {
 
       }
     }
-    //this.enemyDropBomb();
+
+    var enemyRandom = this.game.rnd.between(0, this.enemyPool.children.length - 1);
+
+    if (this.enemyPool.children[enemyRandom].alive) {
+      this.enemyDropBomb(this.enemyPool.children[enemyRandom]);
+    }
   },
   enemyDropBomb: function(enemy) {
-    //var enemyRandom = getRandomInt(0,this.enemyPool.children.length-1);
-    //if (this.enemyPool.children[enemyRandom].canDropBombs(this.bombsPool)
-    //&& this.time.now > this.nextBomb
-    //&& this.enemyPool.children[enemyRandom].alive) {
-    //  this.createBomb(this.enemyPool.children[enemyRandom].x + this.enemyPool.children[enemyRandom].width / 2, this.enemyPool.children[enemyRandom].y + this.enemyPool.children[enemyRandom].height / 2, this.keyBomb, 0);
-    //}
-    var range = 64;
-    // console.log("EnemigoX: " +enemy.x);
-    // console.log("EnemigoY: " +enemy.y);
-    // console.log("PlayerX: " +this.player.x);
-    // console.log("PlayerY: " +this.player.y);
     if (enemy.alive && enemy.canDropBombs(this.bombsPool) && this.time.now > this.nextBomb)
     {
-      if((enemy.x<=this.player.x && enemy.x+range>=this.player.x )|| (enemy.x>=this.player.x && enemy.x-range<=this.player.x ))
-      if((enemy.y<=this.player.y && enemy.y+range>=this.player.y )|| (enemy.y>=this.player.y && enemy.y-range<=this.player.y ))
-
-      this.createBomb(enemy.x + enemy.width / 2, enemy.y + enemy.height / 2, this.keyBomb, 0);
+      if (Math.abs(this.player.row - enemy.row) <= 4 && Math.abs(this.player.column - enemy.column) <= 4) {
+        this.createBomb(enemy.x + enemy.width / 2, enemy.y + enemy.height / 2, this.keyBomb, 0);
+      }
     }
   },
   addEnemy: function(enemyID) {
@@ -208,13 +201,13 @@ Game.prototype = {
   },
   getRocksColliding: function(x, y) {
     var column = Math.floor(x / 32),
-    row = Math.floor(y / 32),
-    rocksColliding = {
-      up: true,
-      down: true,
-      left: true,
-      right: true
-    };
+        row = Math.floor(y / 32),
+        rocksColliding = {
+          up: true,
+          down: true,
+          left: true,
+          right: true
+        };
 
     if(row - 1>=0 && column>=0){
       if (this.rocks.layer.data[row - 1] !== undefined && this.rocks.layer.data[row - 1]) {

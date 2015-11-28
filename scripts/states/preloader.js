@@ -18,6 +18,14 @@ Preloader.prototype = {
     this.load.image('gustavo','assets/images/gustavo.png');
     this.load.image('piero','assets/images/piero.png');
 
+    this.load.image('berry_red','assets/images/item021.png');
+    this.load.image('berry_yellow','assets/images/item022.png');
+    this.load.image('berry_blue','assets/images/item023.png');
+    this.load.image('berry_green','assets/images/item024.png');
+    this.load.image('berry_pink','assets/images/item025.png');
+    this.load.image('berry_white','assets/images/item026.png');
+    this.load.image('berry_black','assets/images/item027.png');
+
     this.load.json('levels', 'assets/data/levels.json')
     this.load.tilemap('level_1', 'assets/tilemaps/level_1.json', null, Phaser.Tilemap.TILED_JSON);
     this.load.tilemap('level_2', 'assets/tilemaps/level_2.json', null, Phaser.Tilemap.TILED_JSON);
