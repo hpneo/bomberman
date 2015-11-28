@@ -6,11 +6,11 @@ function Game() {
 Game.CURRENT_LEVEL = 0;
 Game.BERRIES = [
   'red',
-  'yellow',
-  'blue',
+  // 'yellow',
+  // 'blue',
   'green',
-  'pink',
-  'white',
+  // 'pink',
+  // 'white',
   'black'
 ];
 
@@ -104,11 +104,11 @@ Game.prototype = {
     this.ground.resizeWorld();
     this.rocks.resizeWorld();
 
-    for (var i = 0; i < this.levelIndex * 3; i++) {
+    for (var i = 0; i < this.levelIndex * 2; i++) {
       this.addEnemy(i + 1);
     }
 
-    for (var i = 0; i < this.levelIndex * 2; i++) {
+    for (var i = 0; i < this.levelIndex; i++) {
       this.addBerry();
     }
   },
