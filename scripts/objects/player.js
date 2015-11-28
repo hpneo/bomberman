@@ -1,4 +1,5 @@
-var DEFAULT_PLAYER_SPEED = 160;
+var DEFAULT_PLAYER_SPEED = 160,
+    TILE_SIZE = 32;
 
 function Player(game, x, y, key, frame) {
   Phaser.Sprite.call(this, game, x, y, key, frame);
@@ -8,10 +9,10 @@ function Player(game, x, y, key, frame) {
   this.bombStrength = 1;
   this.score = 0;
   this.alive = true;
-  this.fila = y;
-  this.columna = x;
-  this.x = this.columna * 32;
-  this.y = this.fila * 32;
+  this.row = y;
+  this.column = x;
+  this.x = this.column * TILE_SIZE;
+  this.y = this.row * TILE_SIZE;
   this.speed = DEFAULT_PLAYER_SPEED;
   this.animations.add('up', [15, 12, 13, 14], 8, true);
   this.animations.add('left', [5, 6, 7, 4], 8, true);
@@ -21,11 +22,14 @@ function Player(game, x, y, key, frame) {
   this.game.physics.enable(this);
 
   this.body.setSize(24, 24, 4, 24);
+  this.body.velocity.x = 0;
+  this.body.velocity.y = 0;
   this.anchor.setTo(0, 0);
   this.body.collideWorldBounds = true;
 
-  this.facing = "down";
+  this.facing = 'down';
   this.bombButtonJustPressed = false;
+  this.isMoving = false;
 
   this.game.add.existing(this);
 }
@@ -33,61 +37,113 @@ function Player(game, x, y, key, frame) {
 Player.prototype = Object.create(Phaser.Sprite.prototype);
 Player.prototype.constructor = Player;
 
-// Player.prototype.create = function() {};
-// Player.prototype.update = function() {};
 Player.prototype.handleInput = function(rocks) {
   this.handleMotionInput(rocks);
   this.handleBombInput();
 };
 
+Player.prototype.coordinateToGrid = function(coordinate) {
+  var minimumGridValue = Phaser.Math.snapToFloor(coordinate, TILE_SIZE) / TILE_SIZE,
+      maximumGridValue = Phaser.Math.snapToCeil(coordinate, TILE_SIZE) / TILE_SIZE;
+
+  if (coordinate >= (minimumGridValue * TILE_SIZE) && coordinate <= (maximumGridValue * TILE_SIZE)) {
+    return minimumGridValue;
+  }
+  else {
+    return maximumGridValue;
+  }
+};
+
+Player.prototype.moveUp = function(levelGridData) {
+  this.facing = 'up';
+  this.isMoving = true;
+
+  if ((this.row - 1) >= 0) {
+    if (levelGridData[this.row - 1][this.column] === 0) {
+      this.y -= (TILE_SIZE - 8) * (this.game.time.elapsed / 350);
+      // this.row = Phaser.Math.snapToCeil(this.y, TILE_SIZE) / TILE_SIZE;
+      this.row = this.coordinateToGrid(this.y + 24);
+    }
+  }
+  else {
+    if (this.y >= -8) {
+      this.y -= TILE_SIZE * (this.game.time.elapsed / 350);
+    }
+  }
+};
+
+Player.prototype.moveDown = function(levelGridData) {
+  this.facing = 'down';
+  this.isMoving = true;
+
+  if ((this.row + 1) <= (levelGridData.length - 1)) {
+    if (levelGridData[this.row + 1][this.column] === 0) {
+      this.y += (TILE_SIZE - 8) * (this.game.time.elapsed / 350);
+      // this.row = Phaser.Math.snapToFloor(this.y, TILE_SIZE) / TILE_SIZE;
+      this.row = this.coordinateToGrid(this.y + 24);
+    }
+  }
+  else {
+    if (this.y < (levelGridData.length - 1) * TILE_SIZE) {
+      this.y += TILE_SIZE * (this.game.time.elapsed / 350);
+    }
+  }
+};
+
+Player.prototype.moveLeft = function(levelGridData) {
+  this.facing = 'left';
+  this.isMoving = true;
+
+  if ((this.column - 1) >= 0) {
+    if (levelGridData[this.row][this.column - 1] === 0) {
+      this.x -= TILE_SIZE * (this.game.time.elapsed / 350);
+      // this.column = Phaser.Math.snapToCeil(this.x, TILE_SIZE) / TILE_SIZE;
+      this.column = this.coordinateToGrid(this.x + 4);
+    }
+  }
+  else {
+    if (this.x >= 4) {
+      this.x -= TILE_SIZE * (this.game.time.elapsed / 350);
+    }
+  }
+};
+
+Player.prototype.moveRight = function(levelGridData) {
+  this.facing = 'right';
+  this.isMoving = true;
+
+  if ((this.column + 1) <= (levelGridData[0].length - 1)) {
+    if (levelGridData[this.row][this.column + 1] === 0) {
+      this.x += TILE_SIZE * (this.game.time.elapsed / 350);
+      // this.column = Phaser.Math.snapToCeil(this.x, TILE_SIZE) / TILE_SIZE;
+      this.column = this.coordinateToGrid(this.x + 4);
+    }
+  }
+  else {
+    if (this.x < levelGridData[0].length * TILE_SIZE) {
+      this.x += TILE_SIZE * (this.game.time.elapsed / 350);
+    }
+  }
+};
+
 Player.prototype.handleMotionInput = function(level) {
-  var moving = true;
-  var matriz = level.data;
+  var levelGridData = level.data;
+
   if (this.game.input.keyboard.isDown(Phaser.Keyboard.UP)) {
-    console.log(this.fila);
-    console.log(matriz.length);
-    console.log(this.columna);
-    console.log(matriz[0].length);
-    console.log(matriz);
-    this.facing = "up";
-    if( (this.fila - 1) >= 0){
-      if(matriz[this.fila - 1][this.columna] == 0){
-        this.y = (this.fila - 1) * 32;
-        this.fila -= 1;
-      }
-    }
+    this.moveUp(levelGridData);
   } else if (this.game.input.keyboard.isDown(Phaser.Keyboard.DOWN)) {
-    this.facing = "down";
-    if( (this.fila + 1) <= (matriz.length - 1)){
-      if(matriz[this.fila + 1][this.columna] == 0){
-        this.y = (this.fila + 1) * 32;
-        this.fila += 1;
-      }
-    }
-
+    this.moveDown(levelGridData);
   } else if (this.game.input.keyboard.isDown(Phaser.Keyboard.LEFT)) {
-    this.facing = "left";
-    if( (this.columna - 1) >= 0){
-      if(matriz[this.fila][this.columna - 1] == 0){
-        this.x = (this.columna - 1) * 32;
-        this.columna -= 1;
-      }
-    }
+    this.moveLeft(levelGridData);
   } else if (this.game.input.keyboard.isDown(Phaser.Keyboard.RIGHT)) {
-    this.facing = "right";
-
-    if( (this.columna + 1) <= (matriz[0].length - 1)){
-      if(matriz[this.fila][this.columna + 1] == 0){
-        this.x = (this.columna + 1) * 32;
-        this.columna += 1;
-      }
-    }
+    this.moveRight(levelGridData);
   } else {
-    moving = false;
-    this.freeze();
+    this.stop();
   }
 
-  if(moving)  {
+  // console.log(this.x, this.y, this.column, this.row);
+
+  if (this.isMoving) {
     this.animations.play(this.facing);
   }
 };
@@ -101,7 +157,8 @@ Player.prototype.handleBombInput = function() {
   }
 };
 
-Player.prototype.freeze = function() {
+Player.prototype.stop = function() {
+  this.isMoving = false;
   this.body.velocity.x = 0;
   this.body.velocity.y = 0;
   this.animations.stop();
@@ -112,12 +169,12 @@ Player.prototype.canDropBombs = function(bombsPool) {
 };
 
 Player.prototype.resetForNewRound = function(x, y, key, frame) {
-    this.x = this.x;
-    this.y = this.y;
-    this.facing = "down";
-    this.alive = true;
-    this.maxBombs = 2;
-    this.bombStrength = 1;
-    this.score = 0;
-    this.speed = DEFAULT_PLAYER_SPEED;
-  };
+  this.x = this.x;
+  this.y = this.y;
+  this.facing = 'down';
+  this.alive = true;
+  this.maxBombs = 2;
+  this.bombStrength = 1;
+  this.score = 0;
+  this.speed = DEFAULT_PLAYER_SPEED;
+};
